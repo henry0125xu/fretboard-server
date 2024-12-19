@@ -7,18 +7,10 @@ export class Fretboard {
   public readonly strings: String[];
   private readonly openStrings: FullNote[];
 
-  public constructor(
-    numStrings: number,
-    numFrets: number,
-    openStrings: FullNote[]
-  ) {
-    if (openStrings?.length != numStrings) {
-      throw new Error("Invalid number of open strings");
-    }
-
-    this.numStrings = numStrings;
-    this.numFrets = numFrets;
+  public constructor(openStrings: FullNote[], numFrets: number) {
+    this.numStrings = openStrings.length;
     this.openStrings = openStrings;
+    this.numFrets = numFrets;
     this.strings = Array.from(
       { length: this.numStrings },
       (_, stringIndex) =>

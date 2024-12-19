@@ -40,5 +40,6 @@ tslint.json
 *.swo
 
 # Certification files
+certs/
 *.pem
 *.crt

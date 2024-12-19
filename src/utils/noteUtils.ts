@@ -29,7 +29,7 @@ export function mapToFullNote(
   accidental: Accidental = Accidental.Natural,
   octave: Octave = Octave.Octave4
 ): FullNote {
-  return `${note}${accidental}${octave}` as FullNote;
+  return `${accidental}${note}${octave}` as FullNote;
 }
 
 export function mapToNoteCode(note: FullNote): number {
