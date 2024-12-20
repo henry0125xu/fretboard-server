@@ -2,20 +2,36 @@ import { String } from "./string";
 import { FullNote } from "./note";
 
 export class Fretboard {
-  public readonly numStrings: number;
-  public readonly numFrets: number;
   public readonly strings: String[];
-  private readonly openStrings: FullNote[];
 
   public constructor(openStrings: FullNote[], numFrets: number) {
-    this.numStrings = openStrings.length;
-    this.openStrings = openStrings;
-    this.numFrets = numFrets;
+    if (!openStrings || openStrings.length == 0) {
+      throw new Error("Number of strings must be larger than 0");
+    }
+
+    if (numFrets <= 0) {
+      throw new Error("Number of frets must be larger than 0");
+    }
+
     this.strings = Array.from(
-      { length: this.numStrings },
-      (_, stringIndex) =>
-        new String(this.openStrings[stringIndex], this.numFrets)
+      { length: openStrings.length },
+      (_, stringIndex) => new String(openStrings[stringIndex], numFrets)
     );
+  }
+
+  public get openStrings() {
+    return Array.from(
+      { length: this.strings.length },
+      (_, stringIndex) => this.strings[stringIndex].openString
+    );
+  }
+
+  public get numStrings() {
+    return this.strings.length;
+  }
+
+  public get numFrets() {
+    return this.strings[0].numFrets;
   }
 
   public press(stringIndex: number, fretIndex: number): void {

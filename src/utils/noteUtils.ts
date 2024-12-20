@@ -1,39 +1,43 @@
-import { Note, Accidental, Octave, FullNote } from "../models/note";
-
-const fullNoteRegex: RegExp = /^([#b]{0,2})([A-G])([0-8])$/;
+import {
+  Note,
+  Accidental,
+  Octave,
+  FullNote,
+  FULL_NOTE_REGEX,
+} from "../models/note";
 
 const baseValues: Record<Note, number> = {
-  [Note.C]: 0,
-  [Note.D]: 2,
-  [Note.E]: 4,
-  [Note.F]: 5,
-  [Note.G]: 7,
-  [Note.A]: 9,
-  [Note.B]: 11,
+  ["C"]: 0,
+  ["D"]: 2,
+  ["E"]: 4,
+  ["F"]: 5,
+  ["G"]: 7,
+  ["A"]: 9,
+  ["B"]: 11,
 };
 
 const accidentalOffsets: Record<Accidental, number> = {
-  [Accidental.Natural]: 0,
-  [Accidental.Sharp]: 1,
-  [Accidental.Flat]: -1,
-  [Accidental.DoubleSharp]: 2,
-  [Accidental.DoubleFlat]: -2,
+  [""]: 0,
+  ["#"]: 1,
+  ["b"]: -1,
+  ["##"]: 2,
+  ["bb"]: -2,
 };
 
 function getOctaveOffset(octave: Octave): number {
-  return (octave - Octave.Octave4) * 12;
+  return (octave - 4) * 12;
 }
 
 export function mapToFullNote(
   note: Note,
-  accidental: Accidental = Accidental.Natural,
-  octave: Octave = Octave.Octave4
+  accidental: Accidental = "",
+  octave: Octave = 4
 ): FullNote {
   return `${accidental}${note}${octave}` as FullNote;
 }
 
 export function mapToNoteCode(note: FullNote): number {
-  const match = note.match(fullNoteRegex);
+  const match = note.match(FULL_NOTE_REGEX);
 
   if (!match) {
     throw new Error(`Invalid note format: ${note}`);

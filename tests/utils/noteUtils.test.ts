@@ -1,16 +1,11 @@
 import { mapToFullNote, mapToNoteCode } from "../../src/utils/noteUtils";
-import { FullNote, Note, Accidental, Octave } from "../../src/models/note";
 
 describe("mapToFullNote function", () => {
   it("should return correct FullNote for given inputs", () => {
-    expect(mapToFullNote(Note.C, Accidental.Natural, Octave.Octave4)).toBe(
-      "C4"
-    );
-    expect(mapToFullNote(Note.D, Accidental.Sharp, Octave.Octave5)).toBe("#D5");
-    expect(mapToFullNote(Note.A, Accidental.Flat, Octave.Octave3)).toBe("bA3");
-    expect(mapToFullNote(Note.E, Accidental.DoubleSharp, Octave.Octave2)).toBe(
-      "##E2"
-    );
+    expect(mapToFullNote("C", "", 4)).toBe("C4");
+    expect(mapToFullNote("D", "#", 5)).toBe("#D5");
+    expect(mapToFullNote("A", "b", 3)).toBe("bA3");
+    expect(mapToFullNote("E", "##", 2)).toBe("##E2");
   });
 });
 

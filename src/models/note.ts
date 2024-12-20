@@ -1,31 +1,13 @@
-export enum Note {
-  C = "C",
-  D = "D",
-  E = "E",
-  F = "F",
-  G = "G",
-  A = "A",
-  B = "B",
-}
+export type Note = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 
-export enum Accidental {
-  Natural = "",
-  Sharp = "#",
-  Flat = "b",
-  DoubleSharp = "##",
-  DoubleFlat = "bb",
-}
+export type Accidental = "" | "#" | "b" | "##" | "bb";
 
-export enum Octave {
-  Octave0 = 0,
-  Octave1 = 1,
-  Octave2 = 2,
-  Octave3 = 3,
-  Octave4 = 4,
-  Octave5 = 5,
-  Octave6 = 6,
-  Octave7 = 7,
-  Octave8 = 8,
-}
+export type Octave = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
-export type FullNote = `${Accidental}${Note}${Octave}`;
+export type BasicNote = `${Accidental}${Note}`;
+
+export type FullNote = `${BasicNote}${Octave}`;
+
+export const BASIC_NOTE_REGEX: RegExp = /^([#b]{0,2})([A-G])$/;
+
+export const FULL_NOTE_REGEX: RegExp = /^([#b]{0,2})([A-G])([0-8])$/;

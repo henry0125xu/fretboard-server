@@ -12,7 +12,6 @@ export class Fret {
 
   public toJSON() {
     return {
-      noteCode: this.noteCode,
       isPressed: this._isPressed,
     };
   }

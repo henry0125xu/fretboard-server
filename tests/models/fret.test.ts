@@ -12,7 +12,6 @@ describe("Fret class", () => {
     const json = fret.toJSON();
 
     expect(json).toEqual({
-      noteCode: 0,
       isPressed: true,
     });
   });

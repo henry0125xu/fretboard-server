@@ -2,6 +2,9 @@
 module.exports = {
   testEnvironment: "node",
   transform: {
-    "^.+.tsx?$": ["ts-jest",{}],
+    "^.+.tsx?$": ["ts-jest", {}],
   },
+  collectCoverage: true,
+  coverageDirectory: "coverage",
+  collectCoverageFrom: ["src/**/*.{js,ts}"],
 };

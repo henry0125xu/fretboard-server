@@ -13,6 +13,16 @@ describe("String class", () => {
     string = new String(openString, numFrets);
   });
 
+  it("should return the correct JSON", () => {
+    const json = string.toJSON();
+
+    expect(json).toEqual({
+      openString: string.openString,
+      numFrets: string.numFrets,
+      frets: string.frets,
+    });
+  });
+
   it("should initialize the string with the correct number of frets", () => {
     expect(string.frets.length).toBe(numFrets);
   });
@@ -28,5 +38,24 @@ describe("String class", () => {
     string.frets.forEach((fret) => {
       expect(fret).toBeInstanceOf(Fret);
     });
+  });
+
+  it("should update open string and frets correctly", () => {
+    let newOpenString: FullNote = "G3";
+    let oldFrets: Fret[] = [...string.frets];
+
+    string.updateOpenString(newOpenString);
+
+    let diff = mapToNoteCode(newOpenString) - mapToNoteCode(openString);
+
+    expect(string.openString).toBe(newOpenString);
+    expect(string.numFrets).toBe(numFrets);
+
+    for (let fretIndex = 0; fretIndex < numFrets; fretIndex++) {
+      let newFret = string.frets[fretIndex];
+      let oldFret = oldFrets[fretIndex];
+      expect(newFret.isPressed).toBe(oldFret.isPressed);
+      expect(newFret.noteCode).toBe(oldFret.noteCode + diff);
+    }
   });
 });
