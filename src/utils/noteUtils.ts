@@ -21,6 +21,10 @@ export function mapToNoteCode(fullNote: FullNote): number {
   return ((baseValue + accidentalOffset + 12) % 12) + octaveOffset;
 }
 
+export function classifyBy12Tone(fullNote: FullNote): number {
+  return ((mapToNoteCode(fullNote) % 12) + 12) % 12;
+}
+
 const baseValues: Record<Note, number> = {
   ["C"]: 0,
   ["D"]: 2,
