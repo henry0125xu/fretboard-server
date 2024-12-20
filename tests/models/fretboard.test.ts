@@ -25,6 +25,17 @@ describe("Fretboard class", () => {
     }
   });
 
+  it("should return the correct JSON", () => {
+    const json = fretboard.toJSON();
+
+    expect(json).toEqual({
+      openStrings: fretboard.openStrings,
+      numStrings: fretboard.numStrings,
+      numFrets: fretboard.numFrets,
+      strings: fretboard.strings,
+    });
+  });
+
   it("should throw error during initailization for invalid numebr of strings and frets", () => {
     expect(() => (fretboard = new Fretboard([], numFrets))).toThrow(
       "Number of strings must be larger than 0"

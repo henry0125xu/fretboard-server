@@ -26,11 +26,11 @@ export class FretboardService {
       throw new AppError("Not Found", 404);
     }
 
-    this.fretboard.strings[id].updateOpenString(openString as FullNote);
+    this.fretboard.strings[id].openString = openString as FullNote;
     return this.fretboard;
   }
 
   private static getDefaultFretboard(): Fretboard {
-    return new Fretboard(["E4", "B3", "G3", "D3", "A2", "E2"], 21);
+    return new Fretboard(["E4", "B3", "G3", "D3", "A2", "E2"], 22);
   }
 }

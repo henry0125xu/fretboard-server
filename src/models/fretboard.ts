@@ -34,9 +34,18 @@ export class Fretboard {
     return this.strings[0].numFrets;
   }
 
+  public toJSON() {
+    return {
+      openStrings: this.openStrings,
+      numStrings: this.numStrings,
+      numFrets: this.numFrets,
+      strings: this.strings,
+    };
+  }
+
   public press(stringIndex: number, fretIndex: number): void {
     if (this.isValidPosition(stringIndex, fretIndex)) {
-      this.strings[stringIndex].frets[fretIndex].press();
+      this.strings[stringIndex].frets[fretIndex].isPressed = true;
     } else {
       throw new Error("Invalid string or fret index");
     }
@@ -44,7 +53,7 @@ export class Fretboard {
 
   public release(stringIndex: number, fretIndex: number): void {
     if (this.isValidPosition(stringIndex, fretIndex)) {
-      this.strings[stringIndex].frets[fretIndex].release();
+      this.strings[stringIndex].frets[fretIndex].isPressed = false;
     } else {
       throw new Error("Invalid string or fret index");
     }

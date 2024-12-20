@@ -3,7 +3,8 @@ import { Fretboard } from "../../src/models/fretboard";
 
 describe("FretboardService class", () => {
   let service: FretboardService;
-
+  const numFrets = 22;
+  const numStrings = 6;
   beforeEach(() => {
     service = new FretboardService();
   });
@@ -12,9 +13,8 @@ describe("FretboardService class", () => {
     it("should return a Fretboard with correct properties", async () => {
       const fretboard = await service.getFretboard();
       expect(fretboard).toBeInstanceOf(Fretboard);
-      expect(fretboard.strings.length).toBe(6);
-      fretboard.strings.forEach((string) => expect(string.numFrets).toBe(21));
-      expect(fretboard.strings.length).toBe(6);
+      expect(fretboard.numStrings).toBe(numStrings);
+      expect(fretboard.numFrets).toBe(numFrets);
       expect(fretboard.strings[0].openString).toBe("E4");
       expect(fretboard.strings[1].openString).toBe("B3");
       expect(fretboard.strings[2].openString).toBe("G3");
@@ -29,8 +29,8 @@ describe("FretboardService class", () => {
       await service.updateFretboardString("5", "D2");
       const fretboard = await service.resetFretboard();
       expect(fretboard).toBeInstanceOf(Fretboard);
-      expect(fretboard.strings.length).toBe(6);
-      fretboard.strings.forEach((string) => expect(string.numFrets).toBe(21));
+      expect(fretboard.numStrings).toBe(numStrings);
+      expect(fretboard.numFrets).toBe(numFrets);
       expect(fretboard.strings[0].openString).toBe("E4");
       expect(fretboard.strings[1].openString).toBe("B3");
       expect(fretboard.strings[2].openString).toBe("G3");
@@ -44,8 +44,8 @@ describe("FretboardService class", () => {
     it("should return a Fretboard with correct properties", async () => {
       let fretboard = await service.updateFretboardString("5", "D2");
       expect(fretboard).toBeInstanceOf(Fretboard);
-      expect(fretboard.strings.length).toBe(6);
-      fretboard.strings.forEach((string) => expect(string.numFrets).toBe(21));
+      expect(fretboard.numStrings).toBe(numStrings);
+      expect(fretboard.numFrets).toBe(numFrets);
       expect(fretboard.strings[0].openString).toBe("E4");
       expect(fretboard.strings[1].openString).toBe("B3");
       expect(fretboard.strings[2].openString).toBe("G3");
@@ -55,8 +55,8 @@ describe("FretboardService class", () => {
 
       fretboard = await service.updateFretboardString("2", "A3");
       expect(fretboard).toBeInstanceOf(Fretboard);
-      expect(fretboard.strings.length).toBe(6);
-      fretboard.strings.forEach((string) => expect(string.numFrets).toBe(21));
+      expect(fretboard.numStrings).toBe(numStrings);
+      expect(fretboard.numFrets).toBe(numFrets);
       expect(fretboard.strings[0].openString).toBe("E4");
       expect(fretboard.strings[1].openString).toBe("B3");
       expect(fretboard.strings[2].openString).toBe("A3");
