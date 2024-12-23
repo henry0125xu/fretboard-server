@@ -7,7 +7,8 @@ describe("Fret class", () => {
   });
 
   it("should create a fret instance with the correct initial state", () => {
-    expect(fret.class).toEqual(0);
+    expect(fret.pitchClass).toEqual(0);
+    expect(fret.midiNoteNumber).toEqual(60);
     expect(fret.isPressed).toEqual(false);
   });
 
@@ -15,7 +16,8 @@ describe("Fret class", () => {
     const json = fret.toJSON();
 
     expect(json).toEqual({
-      class: fret.class,
+      pitchClass: fret.pitchClass,
+      midiNoteNumber: fret.midiNoteNumber,
       isPressed: fret.isPressed,
     });
   });

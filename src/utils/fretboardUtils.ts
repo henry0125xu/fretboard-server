@@ -1,6 +1,8 @@
 import { Fretboard } from "../models/fretboard";
-import { setFretClassesForString } from "./stringUtils";
+import { setFretMIDINoteNumbersForString } from "./stringUtils";
 
-export function setFretClassesForFretboard(fretboard: Fretboard) {
-  fretboard.strings.forEach((string) => setFretClassesForString(string));
+export function setFretMIDINoteNumbersForFretboard(fretboard: Fretboard) {
+  fretboard.strings.forEach((string) =>
+    setFretMIDINoteNumbersForString(string)
+  );
 }

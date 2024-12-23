@@ -39,7 +39,12 @@ describe("FretboardService class", () => {
 
       const updatedString = fretboard.strings[5];
       for (let fretIndex = 0; fretIndex < updatedString.numFrets; fretIndex++) {
-        expect(updatedString.frets[fretIndex].class).toBe((2 + fretIndex) % 12);
+        expect(updatedString.frets[fretIndex].midiNoteNumber).toBe(
+          38 + fretIndex
+        );
+        expect(updatedString.frets[fretIndex].pitchClass).toBe(
+          (2 + fretIndex) % 12
+        );
       }
     });
   });
@@ -56,11 +61,18 @@ function assertDefaultFretboard(fretboard: Fretboard) {
   expect(fretboard.strings[4].openString).toBe("A2");
   expect(fretboard.strings[5].openString).toBe("E2");
 
-  const openStringCode = [4, 11, 7, 2, 9, 4];
+  const openStringMIDINoteNumbers = [64, 59, 55, 50, 45, 40];
+  const openStringPitchClasses = [4, 11, 7, 2, 9, 4];
+
   for (let stringIndex = 0; stringIndex < numStrings; stringIndex++) {
     for (let fretIndex = 0; fretIndex < numFrets; fretIndex++) {
       const fret = fretboard.strings[stringIndex].frets[fretIndex];
-      expect(fret.class).toBe((openStringCode[stringIndex] + fretIndex) % 12);
+      expect(fret.midiNoteNumber).toBe(
+        openStringMIDINoteNumbers[stringIndex] + fretIndex
+      );
+      expect(fret.pitchClass).toBe(
+        (openStringPitchClasses[stringIndex] + fretIndex) % 12
+      );
     }
   }
 }

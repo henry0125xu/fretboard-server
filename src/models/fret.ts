@@ -1,10 +1,18 @@
+import { mapMIDINoteNumberToPitchClass } from "../utils/noteUtils";
+
 export class Fret {
-  public class: number = 0;
+  public midiNoteNumber: number = 60;
+
+  public get pitchClass() {
+    return mapMIDINoteNumberToPitchClass(this.midiNoteNumber);
+  }
+
   public isPressed: boolean = false;
 
   public toJSON() {
     return {
-      class: this.class,
+      midiNoteNumber: this.midiNoteNumber,
+      pitchClass: this.pitchClass,
       isPressed: this.isPressed,
     };
   }

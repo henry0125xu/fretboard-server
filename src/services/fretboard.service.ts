@@ -1,8 +1,8 @@
 import { FullNote } from "../models/note";
 import { AppError } from "../errors/appError";
 import { Fretboard } from "../models/fretboard";
-import { setFretClassesForString } from "../utils/stringUtils";
-import { setFretClassesForFretboard } from "../utils/fretboardUtils";
+import { setFretMIDINoteNumbersForString } from "../utils/stringUtils";
+import { setFretMIDINoteNumbersForFretboard } from "../utils/fretboardUtils";
 
 export class FretboardService {
   private fretboard: Fretboard;
@@ -30,13 +30,13 @@ export class FretboardService {
 
     const string = this.fretboard.strings[id];
     string.openString = openString as FullNote;
-    setFretClassesForString(string);
+    setFretMIDINoteNumbersForString(string);
     return this.fretboard;
   }
 
   private static getDefaultFretboard(): Fretboard {
     const fretboard = new Fretboard(["E4", "B3", "G3", "D3", "A2", "E2"], 22);
-    setFretClassesForFretboard(fretboard);
+    setFretMIDINoteNumbersForFretboard(fretboard);
     return fretboard;
   }
 }

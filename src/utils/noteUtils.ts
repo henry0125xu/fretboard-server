@@ -6,23 +6,30 @@ import {
   FULL_NOTE_REGEX,
 } from "../models/note";
 
-export function mapToNoteCode(fullNote: FullNote): number {
+export function mapFullNoteToMIDINoteNumber(fullNote: FullNote): number {
   const match = fullNote.match(FULL_NOTE_REGEX);
   if (!match) {
     throw new Error(`Invalid note format: ${fullNote}`);
   }
 
-  const [, accidental, baseNote, octave] = match;
+  const [, baseNote, accidental, octave] = match;
 
   const baseValue = baseValues[baseNote as Note];
   const accidentalOffset = accidentalOffsets[accidental as Accidental];
   const octaveOffset = getOctaveOffset(Number(octave) as Octave);
 
-  return ((baseValue + accidentalOffset + 12) % 12) + octaveOffset;
+  const midiC4Offset = 60;
+  return (
+    ((baseValue + accidentalOffset + 12) % 12) + octaveOffset + midiC4Offset
+  );
 }
 
-export function classifyBy12Tone(fullNote: FullNote): number {
-  return ((mapToNoteCode(fullNote) % 12) + 12) % 12;
+export function mapFullNoteToPitchClass(fullNote: FullNote): number {
+  return mapMIDINoteNumberToPitchClass(mapFullNoteToMIDINoteNumber(fullNote));
+}
+
+export function mapMIDINoteNumberToPitchClass(midiNotenumber: number): number {
+  return ((midiNotenumber % 12) + 12) % 12;
 }
 
 const baseValues: Record<Note, number> = {
