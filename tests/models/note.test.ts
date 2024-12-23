@@ -35,7 +35,7 @@ describe("Regex Tests", () => {
     expect("H").not.toMatch(BASIC_NOTE_REGEX);
     expect("X").not.toMatch(BASIC_NOTE_REGEX);
     expect("#Cb").not.toMatch(BASIC_NOTE_REGEX);
-    expect("C9").not.toMatch(FULL_NOTE_REGEX);
+    expect("C10").not.toMatch(FULL_NOTE_REGEX);
     expect("H4").not.toMatch(FULL_NOTE_REGEX);
     expect("##C7b").not.toMatch(FULL_NOTE_REGEX);
   });

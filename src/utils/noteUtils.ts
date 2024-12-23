@@ -3,6 +3,9 @@ import {
   Accidental,
   Octave,
   FullNote,
+  EnharmonicBasicNotes as EnharmonicBasicNotes,
+  EnharmonicFullNotes as EnharmonicFullNotes,
+  MIDI_C4,
   FULL_NOTE_REGEX,
 } from "../models/note";
 
@@ -18,18 +21,24 @@ export function mapFullNoteToMIDINoteNumber(fullNote: FullNote): number {
   const accidentalOffset = accidentalOffsets[accidental as Accidental];
   const octaveOffset = getOctaveOffset(Number(octave) as Octave);
 
-  const midiC4Offset = 60;
-  return (
-    ((baseValue + accidentalOffset + 12) % 12) + octaveOffset + midiC4Offset
-  );
+  return ((baseValue + accidentalOffset + 12) % 12) + octaveOffset + MIDI_C4;
 }
 
 export function mapFullNoteToPitchClass(fullNote: FullNote): number {
   return mapMIDINoteNumberToPitchClass(mapFullNoteToMIDINoteNumber(fullNote));
 }
 
-export function mapMIDINoteNumberToPitchClass(midiNotenumber: number): number {
-  return ((midiNotenumber % 12) + 12) % 12;
+export function mapMIDINoteNumberToPitchClass(midiNoteNumber: number): number {
+  return midiNoteNumber % 12;
+}
+
+export function mapMIDINoteNumberToEnharmonicFullNotes(
+  midiNoteNumber: number
+): EnharmonicFullNotes {
+  const octave = toOctave(midiNoteNumber);
+  const pitchClass = mapMIDINoteNumberToPitchClass(midiNoteNumber);
+  const basicNotes = pitchClassToEnharmonicBasicNotes[pitchClass];
+  return toEnharmonicFullNotes(basicNotes, octave as Octave);
 }
 
 const baseValues: Record<Note, number> = {
@@ -52,4 +61,33 @@ const accidentalOffsets: Record<Accidental, number> = {
 
 function getOctaveOffset(octave: Octave): number {
   return (octave - 4) * 12;
+}
+
+const pitchClassToEnharmonicBasicNotes: Record<number, EnharmonicBasicNotes> = {
+  0: ["C"],
+  1: ["C#", "Db"],
+  2: ["D"],
+  3: ["D#", "Eb"],
+  4: ["E"],
+  5: ["F"],
+  6: ["F#", "Gb"],
+  7: ["G"],
+  8: ["G#", "Ab"],
+  9: ["A"],
+  10: ["A#", "Bb"],
+  11: ["B"],
+};
+
+function toEnharmonicFullNotes(
+  notes: EnharmonicBasicNotes,
+  octave: Octave
+): EnharmonicFullNotes {
+  return Array.from(
+    { length: notes.length },
+    (_, index) => `${notes[index]}${octave}`
+  ) as EnharmonicFullNotes;
+}
+
+function toOctave(midiNoteNumber: number): Octave {
+  return (((midiNoteNumber - MIDI_C4 + 12 * 4) / 12) | 0) as Octave;
 }
