@@ -18,14 +18,14 @@ export class FretboardController {
 
   public async resetFretboard(res: Response, next: NextFunction) {
     try {
-      const defaultFretboard = await this.service.resetFretboard();
-      res.status(200).json({ fretboard: defaultFretboard });
+      const fretboard = await this.service.resetFretboard();
+      res.status(200).json({ fretboard: fretboard });
     } catch (err) {
       next(err);
     }
   }
 
-  public async updateFretboardString(
+  public async updateOpenString(
     req: Request,
     res: Response,
     next: NextFunction
@@ -34,12 +34,22 @@ export class FretboardController {
       const stringId = req.params.stringId;
       const { openString } = req.body;
 
-      const updatedFretboard = await this.service.updateFretboardString(
+      const fretboard = await this.service.updateOpenString(
         stringId,
         openString
       );
 
-      res.status(200).json({ fretboard: updatedFretboard });
+      res.status(200).json({ fretboard: fretboard });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  public async updateNumFrets(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { numFrets } = req.body;
+      const fretboard = await this.service.updateNumFrets(numFrets);
+      res.status(200).json({ fretboard: fretboard });
     } catch (err) {
       next(err);
     }

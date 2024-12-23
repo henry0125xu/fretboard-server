@@ -1,5 +1,7 @@
 import { FretboardService } from "../../src/services/fretboard.service";
 import { Fretboard } from "../../src/models/fretboard";
+import * as stringUtils from "../../src/utils/stringUtils";
+import { AppError } from "../../src/errors/appError";
 
 let service: FretboardService;
 const numFrets = 22;
@@ -18,15 +20,17 @@ describe("FretboardService class", () => {
 
   describe("resetFretboard method", () => {
     it("should return a Fretboard with correct properties", async () => {
-      await service.updateFretboardString("5", "D2");
+      await service.updateOpenString("5", "D2");
       const fretboard = await service.resetFretboard();
       assertDefaultFretboard(fretboard);
     });
   });
 
-  describe("updateFretboardString method", () => {
-    it("should return a Fretboard with correct properties", async () => {
-      let fretboard = await service.updateFretboardString("5", "D2");
+  describe("updateOpenString method", () => {
+    it("should return a Fretboard with correct open strings and call setFretMIDINoteNumbers with the updated string", async () => {
+      const spy = jest.spyOn(stringUtils, "setFretMIDINoteNumbers");
+
+      let fretboard = await service.updateOpenString("5", "D2");
       expect(fretboard).toBeInstanceOf(Fretboard);
       expect(fretboard.numStrings).toBe(numStrings);
       expect(fretboard.numFrets).toBe(numFrets);
@@ -38,11 +42,55 @@ describe("FretboardService class", () => {
       expect(fretboard.strings[5].openString).toBe("D2");
 
       const updatedString = fretboard.strings[5];
-      for (let fretIndex = 0; fretIndex < updatedString.numFrets; fretIndex++) {
-        expect(updatedString.frets[fretIndex].midiNoteNumber).toBe(
-          38 + fretIndex
-        );
+      expect(spy).toHaveBeenCalledWith(updatedString);
+
+      spy.mockRestore();
+    });
+
+    it("should throw errors", async () => {
+      await expect(service.updateOpenString("3", "#bC10")).rejects.toThrow(
+        new AppError("Not Found", 404)
+      );
+
+      await expect(service.updateOpenString("-1", "C4")).rejects.toThrow(
+        new AppError("Not Found", 404)
+      );
+    });
+  });
+
+  describe("updateNumFrets method", () => {
+    it("should return a Fretboard with correct number of frets and call setFretMIDINoteNumbers with each string", async () => {
+      const spy = jest.spyOn(stringUtils, "setFretMIDINoteNumbers");
+      const numFrets = "25";
+      let fretboard = await service.updateNumFrets(numFrets);
+
+      expect(fretboard.numFrets).toBe(Number(numFrets));
+
+      for (let stringIndex = 0; stringIndex < numStrings; stringIndex++) {
+        expect(spy).toHaveBeenCalledWith(fretboard.strings[stringIndex]);
       }
+
+      spy.mockRestore();
+    });
+
+    it("should return a Fretboard with correct number of frets and not call setFretMIDINoteNumbers on any string", async () => {
+      const spy = jest.spyOn(stringUtils, "setFretMIDINoteNumbers");
+      const numFrets = "15";
+      let fretboard = await service.updateNumFrets(numFrets);
+
+      expect(fretboard.numFrets).toBe(Number(numFrets));
+
+      for (let stringIndex = 0; stringIndex < numStrings; stringIndex++) {
+        expect(spy).not.toHaveBeenCalledWith(fretboard.strings[stringIndex]);
+      }
+
+      spy.mockRestore();
+    });
+
+    it("should throw errors", async () => {
+      await expect(service.updateNumFrets("-3")).rejects.toThrow(
+        new AppError("Not Found", 404)
+      );
     });
   });
 });

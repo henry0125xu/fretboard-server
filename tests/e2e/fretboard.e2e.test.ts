@@ -32,3 +32,16 @@ describe("PATCH /api/fretboard/strings/:stringId", () => {
     expect(response.body).toHaveProperty("fretboard");
   });
 });
+
+describe("PATCH /api/fretboard/frets", () => {
+  it("should return fretboard data", async () => {
+    const body = { numFrets: 15 };
+
+    const response = await request(app)
+      .patch(`/api/fretboard/frets`)
+      .send(body);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("fretboard");
+  });
+});

@@ -11,7 +11,11 @@ routes.post("/reset", (_req, res, next) =>
 );
 
 routes.patch("/strings/:stringId", (req, res, next) =>
-  controller.updateFretboardString(req, res, next)
+  controller.updateOpenString(req, res, next)
+);
+
+routes.patch("/frets", (req, res, next) =>
+  controller.updateNumFrets(req, res, next)
 );
 
 export default routes;

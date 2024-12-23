@@ -17,5 +17,5 @@ export const MIDI_C4: number = 60;
 const BASE_NOTE_PATTERN = `([A-G])([#b]{0,2})`;
 export const BASIC_NOTE_REGEX: RegExp = new RegExp(`^${BASE_NOTE_PATTERN}$`);
 export const FULL_NOTE_REGEX: RegExp = new RegExp(
-  `^${BASE_NOTE_PATTERN}([0-8])$`
+  `^${BASE_NOTE_PATTERN}([0-9])$`
 );
