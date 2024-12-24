@@ -10,16 +10,17 @@ export class FretboardService {
     this.fretboard = FretboardService.getDefaultFretboard();
   }
 
-  public async getFretboard(): Promise<Fretboard> {
+  public async getFretboard(userId: string): Promise<Fretboard> {
     return this.fretboard;
   }
 
-  public async resetFretboard(): Promise<Fretboard> {
+  public async resetFretboard(userId: string): Promise<Fretboard> {
     this.fretboard = FretboardService.getDefaultFretboard();
     return this.fretboard;
   }
 
   public async updateOpenString(
+    userId: string,
     stringId: string,
     openString: string
   ): Promise<Fretboard> {
@@ -31,7 +32,10 @@ export class FretboardService {
     return this.fretboard;
   }
 
-  public async updateNumFrets(numFrets: string): Promise<Fretboard> {
+  public async updateNumFrets(
+    userId: string,
+    numFrets: string
+  ): Promise<Fretboard> {
     const parsedNumFrets = this.parseNumFrets(numFrets);
     this.fretboard.strings.forEach((string) => {
       const diff = parsedNumFrets - string.numFrets;

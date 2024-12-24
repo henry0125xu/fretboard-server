@@ -7,18 +7,20 @@ export class FretboardController {
     this.service = service;
   }
 
-  public async getFretboard(res: Response, next: NextFunction) {
+  public async getFretboard(req: Request, res: Response, next: NextFunction) {
     try {
-      const fretboard = await this.service.getFretboard();
+      const userId = req.sessionID;
+      const fretboard = await this.service.getFretboard(userId);
       res.status(200).json({ fretboard: fretboard });
     } catch (err) {
       next(err);
     }
   }
 
-  public async resetFretboard(res: Response, next: NextFunction) {
+  public async resetFretboard(req: Request, res: Response, next: NextFunction) {
     try {
-      const fretboard = await this.service.resetFretboard();
+      const userId = req.sessionID;
+      const fretboard = await this.service.resetFretboard(userId);
       res.status(200).json({ fretboard: fretboard });
     } catch (err) {
       next(err);
@@ -31,10 +33,12 @@ export class FretboardController {
     next: NextFunction
   ) {
     try {
+      const userId = req.sessionID;
       const stringId = req.params.stringId;
       const { openString } = req.body;
 
       const fretboard = await this.service.updateOpenString(
+        userId,
         stringId,
         openString
       );
@@ -47,8 +51,9 @@ export class FretboardController {
 
   public async updateNumFrets(req: Request, res: Response, next: NextFunction) {
     try {
+      const userId = req.sessionID;
       const { numFrets } = req.body;
-      const fretboard = await this.service.updateNumFrets(numFrets);
+      const fretboard = await this.service.updateNumFrets(userId, numFrets);
       res.status(200).json({ fretboard: fretboard });
     } catch (err) {
       next(err);

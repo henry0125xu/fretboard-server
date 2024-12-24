@@ -22,10 +22,11 @@ describe("FretboardController class", () => {
       mockFretboardService.getFretboard.mockResolvedValue(mockFretboard);
 
       const controller = new FretboardController(mockFretboardService);
+      const req = {};
       const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
       const next = jest.fn();
 
-      await controller.getFretboard(res as any, next);
+      await controller.getFretboard(req as any, res as any, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ fretboard: mockFretboard });
@@ -35,10 +36,11 @@ describe("FretboardController class", () => {
       mockFretboardService.getFretboard.mockRejectedValue(mockError);
 
       const controller = new FretboardController(mockFretboardService);
+      const req = {};
       const res = { status: jest.fn(), json: jest.fn() };
       const next = jest.fn();
 
-      await controller.getFretboard(res as any, next);
+      await controller.getFretboard(req as any, res as any, next);
 
       expect(next).toHaveBeenCalledWith(mockError);
       expect(res.status).not.toHaveBeenCalled();
@@ -51,10 +53,11 @@ describe("FretboardController class", () => {
       mockFretboardService.resetFretboard.mockResolvedValue(mockFretboard);
 
       const controller = new FretboardController(mockFretboardService);
+      const req = {};
       const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
       const next = jest.fn();
 
-      await controller.resetFretboard(res as any, next);
+      await controller.resetFretboard(req as any, res as any, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ fretboard: mockFretboard });
@@ -64,10 +67,11 @@ describe("FretboardController class", () => {
       mockFretboardService.resetFretboard.mockRejectedValue(mockError);
 
       const controller = new FretboardController(mockFretboardService);
+      const req = {};
       const res = { status: jest.fn(), json: jest.fn() };
       const next = jest.fn();
 
-      await controller.resetFretboard(res as any, next);
+      await controller.resetFretboard(req as any, res as any, next);
 
       expect(next).toHaveBeenCalledWith(mockError);
       expect(res.status).not.toHaveBeenCalled();
