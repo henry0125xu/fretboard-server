@@ -1,7 +1,7 @@
 import { createClient } from "redis";
 import { Store } from "../models/store";
 
-class RedisService implements Store {
+export class RedisService implements Store {
   private _client;
   public get client() {
     return this._client;
@@ -9,7 +9,7 @@ class RedisService implements Store {
 
   constructor() {
     this._client = createClient();
-    this._client.on("error", (err) => console.error("Redis Client Error", err));
+    this._client.on("error", (err) => console.error(err));
     this._client.connect().catch(console.error);
   }
 

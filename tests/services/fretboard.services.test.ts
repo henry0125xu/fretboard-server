@@ -26,27 +26,17 @@ describe("FretboardService class", () => {
 
   describe("getFretboard method", () => {
     it("should return fretboard instance with correct process including fretboard initialization", async () => {
-      const mockDefaultFretboard = newMockFretboard();
       const initializeFretboardSpy = jest
         .spyOn(fretboardUtils, "initializeFretboard")
         .mockImplementation(() => mockFretboard);
+      (mockStore.get as jest.Mock).mockResolvedValueOnce(null);
 
-      const mockEmptyStore: Store = {
-        get: jest.fn().mockResolvedValue(null),
-        set: jest.fn().mockResolvedValue(undefined),
-        delete: jest.fn().mockResolvedValue(undefined),
-      };
-      const specificService = new FretboardService(mockEmptyStore);
+      const gottenFretboard = await service.getFretboard("jaylenbrown");
 
-      const gottenFretboard = await specificService.getFretboard("jaylenbrown");
-
-      expect(mockEmptyStore.get).toHaveBeenCalledWith("jaylenbrown");
+      expect(mockStore.get).toHaveBeenCalledWith("jaylenbrown");
       expect(initializeFretboardSpy).toHaveBeenCalled();
-      expect(mockEmptyStore.set).toHaveBeenCalledWith(
-        "jaylenbrown",
-        mockDefaultFretboard
-      );
-      expect(gottenFretboard).toEqual(mockDefaultFretboard);
+      expect(mockStore.set).toHaveBeenCalledWith("jaylenbrown", mockFretboard);
+      expect(gottenFretboard).toEqual(mockFretboard);
     });
     it("should return Fretboard instance with correct process", async () => {
       const gottenFretboard = await service.getFretboard("paulgeorge");

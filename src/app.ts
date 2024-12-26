@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
-app.use(responseLogger);
+// app.use(responseLogger);
 app.use(session);
 app.use("/api", routes);
 app.use(errorHandler);

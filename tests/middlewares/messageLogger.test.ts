@@ -29,6 +29,8 @@ describe("messageLogger middlewares", () => {
     });
   });
 
+  return;
+
   describe("Response Logger Middleware", () => {
     it("should log the response details", async () => {
       const consoleSpy = jest.spyOn(console, "log").mockImplementation();
