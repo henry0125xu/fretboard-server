@@ -1,118 +1,134 @@
 import { FretboardService } from "../../src/services/fretboard.service";
 import { Fretboard } from "../../src/models/fretboard";
+import { String } from "../../src/models/string";
+import { Store } from "../../src/models/store";
+import { Fret } from "../../src/models/fret";
+import { FullNote } from "../../src/models/note";
+import * as fretboardUtils from "../../src/utils/fretboardUtils";
 import * as stringUtils from "../../src/utils/stringUtils";
-import { AppError } from "../../src/errors/appError";
 
-let service: FretboardService;
-const numFrets = 22;
-const numStrings = 6;
 describe("FretboardService class", () => {
+  let mockFretboard: Fretboard;
+  let mockStore: Store;
+  let service: FretboardService;
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
   beforeEach(() => {
-    service = new FretboardService();
+    mockFretboard = newMockFretboard();
+    mockStore = {
+      get: jest.fn().mockResolvedValue(mockFretboard),
+      set: jest.fn().mockResolvedValue(undefined),
+      delete: jest.fn().mockResolvedValue(undefined),
+    };
+    service = new FretboardService(mockStore);
   });
 
   describe("getFretboard method", () => {
-    it("should return a Fretboard with correct properties", async () => {
-      const fretboard = await service.getFretboard();
-      assertDefaultFretboard(fretboard);
+    it("should return fretboard instance with correct process including fretboard initialization", async () => {
+      const mockDefaultFretboard = newMockFretboard();
+      const initializeFretboardSpy = jest
+        .spyOn(fretboardUtils, "initializeFretboard")
+        .mockImplementation(() => mockFretboard);
+
+      const mockEmptyStore: Store = {
+        get: jest.fn().mockResolvedValue(null),
+        set: jest.fn().mockResolvedValue(undefined),
+        delete: jest.fn().mockResolvedValue(undefined),
+      };
+      const specificService = new FretboardService(mockEmptyStore);
+
+      const gottenFretboard = await specificService.getFretboard("jaylenbrown");
+
+      expect(mockEmptyStore.get).toHaveBeenCalledWith("jaylenbrown");
+      expect(initializeFretboardSpy).toHaveBeenCalled();
+      expect(mockEmptyStore.set).toHaveBeenCalledWith(
+        "jaylenbrown",
+        mockDefaultFretboard
+      );
+      expect(gottenFretboard).toEqual(mockDefaultFretboard);
+    });
+    it("should return Fretboard instance with correct process", async () => {
+      const gottenFretboard = await service.getFretboard("paulgeorge");
+      expect(mockStore.get).toHaveBeenCalledWith("paulgeorge");
+      expect(mockFretboard).toEqual(gottenFretboard);
     });
   });
-
   describe("resetFretboard method", () => {
-    it("should return a Fretboard with correct properties", async () => {
-      await service.updateOpenString("5", "D2");
-      const fretboard = await service.resetFretboard();
-      assertDefaultFretboard(fretboard);
+    it("should return Fretboard instance with correct process", async () => {
+      const initializeFretboardSpy = jest
+        .spyOn(fretboardUtils, "initializeFretboard")
+        .mockImplementation(() => mockFretboard);
+
+      const gottenFretboard = await service.resetFretboard("kevindurant");
+
+      expect(initializeFretboardSpy).toHaveBeenCalled();
+      expect(mockStore.set).toHaveBeenCalledWith("kevindurant", mockFretboard);
+      expect(mockFretboard).toEqual(gottenFretboard);
     });
   });
-
   describe("updateOpenString method", () => {
-    it("should return a Fretboard with correct open strings and call setFretMIDINoteNumbers with the updated string", async () => {
-      const spy = jest.spyOn(stringUtils, "setFretMIDINoteNumbers");
+    it("should return Fretboard instance with correct process", async () => {
+      const mockString = new String();
+      const getFretboardSpy = jest
+        .spyOn(service, "getFretboard")
+        .mockImplementation(async (_: string) => mockFretboard);
+      const getStringSpy = jest
+        .spyOn(fretboardUtils, "getString")
+        .mockImplementation((_f: Fretboard, _i: number) => mockString);
+      const updateOpenStringSpy = jest
+        .spyOn(stringUtils, "updateOpenString")
+        .mockImplementation((_s: String, _f: FullNote) => undefined);
 
-      let fretboard = await service.updateOpenString("5", "D2");
-      expect(fretboard).toBeInstanceOf(Fretboard);
-      expect(fretboard.numStrings).toBe(numStrings);
-      expect(fretboard.numFrets).toBe(numFrets);
-      expect(fretboard.strings[0].openString).toBe("E4");
-      expect(fretboard.strings[1].openString).toBe("B3");
-      expect(fretboard.strings[2].openString).toBe("G3");
-      expect(fretboard.strings[3].openString).toBe("D3");
-      expect(fretboard.strings[4].openString).toBe("A2");
-      expect(fretboard.strings[5].openString).toBe("D2");
-
-      const updatedString = fretboard.strings[5];
-      expect(spy).toHaveBeenCalledWith(updatedString);
-
-      spy.mockRestore();
-    });
-
-    it("should throw errors", async () => {
-      await expect(service.updateOpenString("3", "#bC10")).rejects.toThrow(
-        new AppError("Not Found", 404)
+      const gottenFretboard = await service.updateOpenString(
+        "jimmybutler",
+        "2",
+        "C4"
       );
 
-      await expect(service.updateOpenString("-1", "C4")).rejects.toThrow(
-        new AppError("Not Found", 404)
+      expect(getFretboardSpy).toHaveBeenCalledWith("jimmybutler");
+      expect(getStringSpy).toHaveBeenCalledWith(mockFretboard, 2);
+      expect(updateOpenStringSpy).toHaveBeenCalledWith(
+        mockString,
+        "C4" as FullNote
       );
+      expect(mockStore.set).toHaveBeenCalledWith("jimmybutler", mockFretboard);
+      expect(gottenFretboard).toEqual(mockFretboard);
     });
   });
-
   describe("updateNumFrets method", () => {
-    it("should return a Fretboard with correct number of frets and call setFretMIDINoteNumbers with each string", async () => {
-      const spy = jest.spyOn(stringUtils, "setFretMIDINoteNumbers");
-      const numFrets = "25";
-      let fretboard = await service.updateNumFrets(numFrets);
+    it("should return Fretboard instance with correct process", async () => {
+      const getFretboardSpy = jest
+        .spyOn(service, "getFretboard")
+        .mockImplementation(async (_: string) => mockFretboard);
+      const updateNumFretsSpy = jest
+        .spyOn(stringUtils, "updateNumFrets")
+        .mockImplementation((_s: String, _n: number) => undefined);
 
-      expect(fretboard.numFrets).toBe(Number(numFrets));
+      const gottenFretboard = await service.updateNumFrets("rjbarrett", "10");
 
-      for (let stringIndex = 0; stringIndex < numStrings; stringIndex++) {
-        expect(spy).toHaveBeenCalledWith(fretboard.strings[stringIndex]);
-      }
-
-      spy.mockRestore();
-    });
-
-    it("should return a Fretboard with correct number of frets and not call setFretMIDINoteNumbers on any string", async () => {
-      const spy = jest.spyOn(stringUtils, "setFretMIDINoteNumbers");
-      const numFrets = "15";
-      let fretboard = await service.updateNumFrets(numFrets);
-
-      expect(fretboard.numFrets).toBe(Number(numFrets));
-
-      for (let stringIndex = 0; stringIndex < numStrings; stringIndex++) {
-        expect(spy).not.toHaveBeenCalledWith(fretboard.strings[stringIndex]);
-      }
-
-      spy.mockRestore();
-    });
-
-    it("should throw errors", async () => {
-      await expect(service.updateNumFrets("-3")).rejects.toThrow(
-        new AppError("Not Found", 404)
+      expect(getFretboardSpy).toHaveBeenCalledWith("rjbarrett");
+      expect(updateNumFretsSpy).toHaveBeenCalledTimes(
+        mockFretboard.strings.length
       );
+      mockFretboard.strings.forEach((string, index) => {
+        expect(updateNumFretsSpy).toHaveBeenNthCalledWith(
+          index + 1,
+          string,
+          10
+        );
+      });
+      expect(mockStore.set).toHaveBeenCalledWith("rjbarrett", mockFretboard);
+      expect(gottenFretboard).toEqual(mockFretboard);
     });
   });
 });
 
-function assertDefaultFretboard(fretboard: Fretboard) {
-  expect(fretboard).toBeInstanceOf(Fretboard);
-  expect(fretboard.numStrings).toBe(numStrings);
-  expect(fretboard.numFrets).toBe(numFrets);
-  expect(fretboard.strings[0].openString).toBe("E4");
-  expect(fretboard.strings[1].openString).toBe("B3");
-  expect(fretboard.strings[2].openString).toBe("G3");
-  expect(fretboard.strings[3].openString).toBe("D3");
-  expect(fretboard.strings[4].openString).toBe("A2");
-  expect(fretboard.strings[5].openString).toBe("E2");
-  const openStringMIDINoteNumbers = [64, 59, 55, 50, 45, 40];
-
-  for (let stringIndex = 0; stringIndex < numStrings; stringIndex++) {
-    for (let fretIndex = 0; fretIndex < numFrets; fretIndex++) {
-      const fret = fretboard.strings[stringIndex].frets[fretIndex];
-      expect(fret.midiNoteNumber).toBe(
-        openStringMIDINoteNumbers[stringIndex] + fretIndex
-      );
-    }
-  }
+function newMockFretboard(): Fretboard {
+  const fretboard = new Fretboard();
+  fretboard.strings = Array.from({ length: 3 }, () => new String());
+  fretboard.strings.forEach((string) => {
+    string.frets = Array.from({ length: 10 }, () => new Fret());
+  });
+  return fretboard;
 }

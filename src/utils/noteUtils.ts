@@ -3,8 +3,8 @@ import {
   Accidental,
   Octave,
   FullNote,
-  EnharmonicBasicNotes as EnharmonicBasicNotes,
-  EnharmonicFullNotes as EnharmonicFullNotes,
+  EnharmonicBasicNotes,
+  EnharmonicFullNotes,
   MIDI_C4,
   FULL_NOTE_REGEX,
 } from "../models/note";
@@ -12,7 +12,7 @@ import {
 export function mapFullNoteToMIDINoteNumber(fullNote: FullNote): number {
   const match = fullNote.match(FULL_NOTE_REGEX);
   if (!match) {
-    throw new Error(`Invalid note format: ${fullNote}`);
+    throw new Error(`Invalid format: ${fullNote}`);
   }
 
   const [, baseNote, accidental, octave] = match;
@@ -25,7 +25,9 @@ export function mapFullNoteToMIDINoteNumber(fullNote: FullNote): number {
 }
 
 export function mapFullNoteToPitchClass(fullNote: FullNote): number {
-  return mapMIDINoteNumberToPitchClass(mapFullNoteToMIDINoteNumber(fullNote));
+  return exports.mapMIDINoteNumberToPitchClass(
+    exports.mapFullNoteToMIDINoteNumber(fullNote)
+  );
 }
 
 export function mapMIDINoteNumberToPitchClass(midiNoteNumber: number): number {
@@ -36,9 +38,9 @@ export function mapMIDINoteNumberToEnharmonicFullNotes(
   midiNoteNumber: number
 ): EnharmonicFullNotes {
   const octave = toOctave(midiNoteNumber);
-  const pitchClass = mapMIDINoteNumberToPitchClass(midiNoteNumber);
+  const pitchClass = exports.mapMIDINoteNumberToPitchClass(midiNoteNumber);
   const basicNotes = pitchClassToEnharmonicBasicNotes[pitchClass];
-  return toEnharmonicFullNotes(basicNotes, octave as Octave);
+  return toEnharmonicFullNotes(basicNotes, octave);
 }
 
 const baseValues: Record<Note, number> = {

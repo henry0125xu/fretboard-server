@@ -1,22 +1,28 @@
-import { FullNote, FULL_NOTE_REGEX } from "../models/note";
-import { Fret } from "../models/fret";
-import { AppError } from "../errors/appError";
 import { Fretboard } from "../models/fretboard";
-import { setFretMIDINoteNumbers } from "../utils/stringUtils";
+import * as stringUtils from "../utils/stringUtils";
+import * as fretboardUtils from "../utils/fretboardUtils";
+import { parseNumber, parseFullNote } from "../utils/stringParsers";
+import { Store } from "../models/store";
 
 export class FretboardService {
-  private fretboard: Fretboard;
-  constructor() {
-    this.fretboard = FretboardService.getDefaultFretboard();
+  private readonly store: Store;
+  public constructor(store: Store) {
+    this.store = store;
   }
 
   public async getFretboard(userId: string): Promise<Fretboard> {
-    return this.fretboard;
+    let fretboard = await this.store.get(userId);
+    if (!fretboard) {
+      fretboard = fretboardUtils.initializeFretboard();
+      await this.store.set(userId, fretboard);
+    }
+    return fretboard as Fretboard;
   }
 
   public async resetFretboard(userId: string): Promise<Fretboard> {
-    this.fretboard = FretboardService.getDefaultFretboard();
-    return this.fretboard;
+    const fretboard = fretboardUtils.initializeFretboard();
+    await this.store.set(userId, fretboard);
+    return fretboard;
   }
 
   public async updateOpenString(
@@ -24,62 +30,28 @@ export class FretboardService {
     stringId: string,
     openString: string
   ): Promise<Fretboard> {
-    const parsedStringId = this.parseStringId(stringId);
-    const parsedOpenString = this.parseOpenString(openString);
-    const string = this.fretboard.strings[parsedStringId];
-    string.openString = parsedOpenString;
-    setFretMIDINoteNumbers(string);
-    return this.fretboard;
+    const fretboard = await this.getFretboard(userId);
+    const parsedStringId = parseNumber(stringId);
+    const parsedOpenString = parseFullNote(openString);
+
+    const string = fretboardUtils.getString(fretboard, parsedStringId);
+    stringUtils.updateOpenString(string, parsedOpenString);
+
+    await this.store.set(userId, fretboard);
+    return fretboard;
   }
 
   public async updateNumFrets(
     userId: string,
     numFrets: string
   ): Promise<Fretboard> {
-    const parsedNumFrets = this.parseNumFrets(numFrets);
-    this.fretboard.strings.forEach((string) => {
-      const diff = parsedNumFrets - string.numFrets;
-      if (diff === 0) return;
-
-      let opCount = Math.abs(diff);
-      if (diff < 0) {
-        while (opCount--) string.frets.pop();
-      } else {
-        while (opCount--) string.frets.push(new Fret());
-        setFretMIDINoteNumbers(string);
-      }
+    const fretboard = await this.getFretboard(userId);
+    const parsedNumFrets = parseNumber(numFrets);
+    fretboard.strings.forEach((string) => {
+      stringUtils.updateNumFrets(string, parsedNumFrets);
     });
 
-    return this.fretboard;
-  }
-
-  private parseStringId(stringId: string): number {
-    const result = Number(stringId);
-    if (isNaN(result) || result < 0 || result > this.fretboard.numStrings) {
-      throw new AppError("Not Found", 404);
-    }
-    return result;
-  }
-
-  private parseOpenString(openString: string): FullNote {
-    const match = openString.match(FULL_NOTE_REGEX);
-    if (!match) {
-      throw new AppError("Not Found", 404);
-    }
-    return openString as FullNote;
-  }
-
-  private parseNumFrets(numFrets: string): number {
-    const result = Number(numFrets);
-    if (isNaN(result) || result <= 0) {
-      throw new AppError("Not Found", 404);
-    }
-    return result;
-  }
-
-  private static getDefaultFretboard(): Fretboard {
-    const fretboard = new Fretboard(["E4", "B3", "G3", "D3", "A2", "E2"], 22);
-    fretboard.strings.forEach((string) => setFretMIDINoteNumbers(string));
+    await this.store.set(userId, fretboard);
     return fretboard;
   }
 }

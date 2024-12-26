@@ -1,19 +1,26 @@
 import { FretboardService } from "../../src/services/fretboard.service";
 import { FretboardController } from "../../src/controllers/fretboard.controller";
 import { Fretboard } from "../../src/models/fretboard";
-import { NextFunction } from "express";
+import { Store } from "../../src/models/store";
 
 jest.mock("../../src/services/fretboard.service");
 
 describe("FretboardController class", () => {
   let mockFretboardService: jest.Mocked<FretboardService>;
   let mockFretboard: Fretboard;
+  let mockStore: Store;
   let mockError: Error;
   beforeEach(() => {
-    mockFretboardService =
-      new FretboardService() as jest.Mocked<FretboardService>;
+    mockStore = {
+      get: jest.fn().mockResolvedValue(mockFretboard),
+      set: jest.fn().mockResolvedValue(undefined),
+      delete: jest.fn().mockResolvedValue(undefined),
+    };
+    mockFretboardService = new FretboardService(
+      mockStore
+    ) as jest.Mocked<FretboardService>;
 
-    mockFretboard = new Fretboard(["E4", "B3", "G3", "D3", "A2", "E2"], 21);
+    mockFretboard = new Fretboard();
     mockError = new Error("Service error");
   });
 

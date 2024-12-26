@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { FretboardService } from "../services/fretboard.service";
+import redisService from "../services/redis.service";
 
 export class FretboardController {
   private readonly service: FretboardService;
-  constructor(service: FretboardService = new FretboardService()) {
+  constructor(service: FretboardService = new FretboardService(redisService)) {
     this.service = service;
   }
 

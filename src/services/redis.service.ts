@@ -1,6 +1,7 @@
 import { createClient } from "redis";
+import { Store } from "../models/store";
 
-class RedisService {
+class RedisService implements Store {
   private _client;
   public get client() {
     return this._client;
@@ -12,7 +13,11 @@ class RedisService {
     this._client.connect().catch(console.error);
   }
 
-  public async set<T>(key: string, value: T, expiration?: number) {
+  public async set<T>(
+    key: string,
+    value: T,
+    expiration?: number
+  ): Promise<void> {
     const serializedValue = JSON.stringify(value);
     if (expiration) {
       await this._client.set(key, serializedValue, { EX: expiration });
@@ -26,11 +31,11 @@ class RedisService {
     return value ? JSON.parse(value) : null;
   }
 
-  public async delete(key: string) {
+  public async delete(key: string): Promise<void> {
     await this._client.del(key);
   }
 
-  public async close() {
+  public async close(): Promise<void> {
     await this._client.disconnect();
   }
 }
