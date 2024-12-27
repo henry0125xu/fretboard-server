@@ -33,7 +33,7 @@ describe("getFret function", () => {
 
   it("should get the fret correctly", () => {
     const gottenFret = utils.getFret(string, 4);
-    expect(gottenFret).toEqual(string.frets[4]);
+    expect(gottenFret).toBe(string.frets[4]);
   });
 });
 

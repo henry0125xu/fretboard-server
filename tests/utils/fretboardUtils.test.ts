@@ -74,26 +74,6 @@ describe("initailizeString function", () => {
   });
 });
 
-describe("getString function", () => {
-  const fretboard = new Fretboard();
-  beforeEach(() => {
-    fretboard.strings = Array.from({ length: 7 }, () => new String());
-  });
-  it("should get the string correctly", () => {
-    const actual = utils.getString(fretboard, 5);
-    const expected = fretboard.strings[5];
-    expect(actual).toEqual(expected);
-  });
-  it("should throw errors", () => {
-    expect(() => utils.getString(fretboard, -1)).toThrow(
-      new Error("Invalid string index")
-    );
-    expect(() => utils.getString(fretboard, 8)).toThrow(
-      new Error("Invalid string index")
-    );
-  });
-});
-
 describe("pressFret, releaseFret, and isFretPressed functions", () => {
   const fretboard = new Fretboard();
   const numStrings = 5;
@@ -131,5 +111,90 @@ describe("pressFret, releaseFret, and isFretPressed functions", () => {
     expect(() => utils.releaseFret(fretboard, 2, -5)).toThrow();
     expect(() => utils.isFretPressed(fretboard, 42, -5)).toThrow();
     expect(() => utils.isFretPressed(fretboard, 77, 100)).toThrow();
+  });
+});
+
+describe("getString function", () => {
+  const fretboard = new Fretboard();
+  beforeEach(() => {
+    fretboard.strings = Array.from({ length: 7 }, () => new String());
+  });
+  it("should get the string correctly", () => {
+    const actual = utils.getString(fretboard, 5);
+    const expected = fretboard.strings[5];
+    expect(actual).toBe(expected);
+  });
+  it("should throw errors", () => {
+    expect(() => utils.getString(fretboard, -1)).toThrow(
+      new Error("Invalid string index")
+    );
+    expect(() => utils.getString(fretboard, 8)).toThrow(
+      new Error("Invalid string index")
+    );
+  });
+});
+
+describe("deleteString function", () => {
+  const fretboard = new Fretboard();
+  beforeEach(() => {
+    fretboard.strings = Array.from({ length: 6 }, () => new String());
+  });
+  it("should delete the string and compress the left correctly", () => {
+    const oldStrings = fretboard.strings.map((string) => string);
+
+    utils.deleteString(fretboard, 3);
+
+    expect(fretboard.strings.length).toBe(5);
+    expect(fretboard.strings[0]).toBe(oldStrings[0]);
+    expect(fretboard.strings[1]).toBe(oldStrings[1]);
+    expect(fretboard.strings[2]).toBe(oldStrings[2]);
+    expect(fretboard.strings[3]).toBe(oldStrings[4]);
+    expect(fretboard.strings[4]).toBe(oldStrings[5]);
+    expect(fretboard.strings[3]).not.toBe(oldStrings[3]);
+    expect(fretboard.strings[4]).not.toBe(oldStrings[4]);
+  });
+  it("should throw errors", () => {
+    expect(() => utils.deleteString(fretboard, -1)).toThrow(
+      new Error("Invalid string index")
+    );
+    expect(() => utils.deleteString(fretboard, 8)).toThrow(
+      new Error("Invalid string index")
+    );
+  });
+});
+
+describe("insertString function", () => {
+  const fretboard = new Fretboard();
+  beforeEach(() => {
+    fretboard.strings = Array.from({ length: 6 }, () => new String());
+  });
+  it("should insert the string correctly", () => {
+    const oldStrings = fretboard.strings.map((string) => string);
+    const stringToInsert = new String();
+
+    utils.insertString(fretboard, stringToInsert, 4);
+
+    expect(fretboard.strings.length).toBe(7);
+    expect(fretboard.strings[0]).toBe(oldStrings[0]);
+    expect(fretboard.strings[1]).toBe(oldStrings[1]);
+    expect(fretboard.strings[2]).toBe(oldStrings[2]);
+    expect(fretboard.strings[3]).toBe(oldStrings[3]);
+    expect(fretboard.strings[4]).toBe(stringToInsert);
+    expect(fretboard.strings[5]).toBe(oldStrings[4]);
+    expect(fretboard.strings[6]).toBe(oldStrings[5]);
+    expect(fretboard.strings[4]).not.toBe(oldStrings[4]);
+    expect(fretboard.strings[5]).not.toBe(oldStrings[5]);
+  });
+  it("should throw errors", () => {
+    expect(() => utils.insertString(fretboard, new String(), -1)).toThrow(
+      new Error("Invalid string index")
+    );
+    expect(() => utils.insertString(fretboard, new String(), 7)).toThrow(
+      new Error("Invalid string index")
+    );
+  });
+  it("should not throw errors", () => {
+    expect(() => utils.insertString(fretboard, new String(), 0)).not.toThrow();
+    expect(() => utils.insertString(fretboard, new String(), 6)).not.toThrow();
   });
 });

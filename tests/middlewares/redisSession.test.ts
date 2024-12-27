@@ -31,7 +31,7 @@ app.get("/test", (_req, res) => {
   res.status(200).send("Hello World");
 });
 
-describe("Session Middleware", () => {
+describe("redisSession middleware", () => {
   it("should set session cookie", async () => {
     await request(app)
       .get("/test")

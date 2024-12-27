@@ -4,6 +4,7 @@ import {
   DEFAULT_OPEN_STRINGS,
   DEFAULT_NUM_FRETS,
 } from "../models/fretboard";
+import { String } from "../models/string";
 import { initailizeString, getFret } from "./stringUtils";
 
 export function initializeFretboard(
@@ -28,7 +29,7 @@ export function pressFret(
   fretboard: Fretboard,
   stringIndex: number,
   fretIndex: number
-) {
+): void {
   const string = exports.getString(fretboard, stringIndex);
   const fret = getFret(string, fretIndex);
   fret.isPressed = true;
@@ -54,11 +55,32 @@ export function isFretPressed(
   return fret.isPressed;
 }
 
-export function getString(fretboard: Fretboard, stringIndex: number) {
+export function getString(fretboard: Fretboard, stringIndex: number): String {
   if (!isValidStringIndex(fretboard, stringIndex)) {
     throw new Error("Invalid string index");
   }
   return fretboard.strings[stringIndex];
+}
+
+export function deleteString(fretboard: Fretboard, stringIndex: number): void {
+  if (!isValidStringIndex(fretboard, stringIndex)) {
+    throw new Error("Invalid string index");
+  }
+  fretboard.strings.splice(stringIndex, 1);
+}
+
+export function insertString(
+  fretboard: Fretboard,
+  string: String,
+  stringIndex: number
+): void {
+  if (
+    !isValidStringIndex(fretboard, stringIndex) &&
+    stringIndex != fretboard.strings.length
+  ) {
+    throw new Error("Invalid string index");
+  }
+  fretboard.strings.splice(stringIndex, 0, string);
 }
 
 function isValidStringIndex(

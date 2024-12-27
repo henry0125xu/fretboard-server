@@ -36,12 +36,12 @@ describe("FretboardService class", () => {
       expect(mockStore.get).toHaveBeenCalledWith("jaylenbrown");
       expect(initializeFretboardSpy).toHaveBeenCalled();
       expect(mockStore.set).toHaveBeenCalledWith("jaylenbrown", mockFretboard);
-      expect(gottenFretboard).toEqual(mockFretboard);
+      expect(gottenFretboard).toBe(mockFretboard);
     });
     it("should return Fretboard instance with correct process", async () => {
       const gottenFretboard = await service.getFretboard("paulgeorge");
       expect(mockStore.get).toHaveBeenCalledWith("paulgeorge");
-      expect(mockFretboard).toEqual(gottenFretboard);
+      expect(mockFretboard).toBe(gottenFretboard);
     });
   });
   describe("resetFretboard method", () => {
@@ -54,7 +54,7 @@ describe("FretboardService class", () => {
 
       expect(initializeFretboardSpy).toHaveBeenCalled();
       expect(mockStore.set).toHaveBeenCalledWith("kevindurant", mockFretboard);
-      expect(mockFretboard).toEqual(gottenFretboard);
+      expect(mockFretboard).toBe(gottenFretboard);
     });
   });
   describe("updateOpenString method", () => {
@@ -83,7 +83,7 @@ describe("FretboardService class", () => {
         "C4" as FullNote
       );
       expect(mockStore.set).toHaveBeenCalledWith("jimmybutler", mockFretboard);
-      expect(gottenFretboard).toEqual(mockFretboard);
+      expect(gottenFretboard).toBe(mockFretboard);
     });
   });
   describe("updateNumFrets method", () => {
@@ -109,7 +109,7 @@ describe("FretboardService class", () => {
         );
       });
       expect(mockStore.set).toHaveBeenCalledWith("rjbarrett", mockFretboard);
-      expect(gottenFretboard).toEqual(mockFretboard);
+      expect(gottenFretboard).toBe(mockFretboard);
     });
   });
 });
