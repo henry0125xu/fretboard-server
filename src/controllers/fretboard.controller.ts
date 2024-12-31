@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { FretboardService } from "../services/fretboard.service";
-import redisService from "../services/redis.service";
+import { redisService } from "../services/redis.service";
 
 export class FretboardController {
   private readonly service: FretboardService;

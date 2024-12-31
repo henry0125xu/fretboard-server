@@ -1,37 +1,26 @@
-import session from "express-session";
 import { RedisStore } from "connect-redis";
 import request from "supertest";
 import express from "express";
-
-const client = {
-  get: jest.fn(),
-  set: jest.fn(),
-  del: jest.fn(),
-};
-
-const app = express();
-
-app.use(
-  session({
-    store: new RedisStore({
-      client: client,
-      ttl: 3600,
-    }),
-    secret: "mysecret",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 1000 * 3600,
-      secure: false,
-    },
-  })
-);
-
-app.get("/test", (_req, res) => {
-  res.status(200).send("Hello World");
-});
+import session from "../../src/middlewares/session";
 
 describe("redisSession middleware", () => {
+  const client = {
+    get: jest.fn(),
+    set: jest.fn(),
+    del: jest.fn(),
+  };
+
+  const store = new RedisStore({
+    client: client,
+    ttl: 3600,
+  });
+
+  const app = express();
+  app.use(session(store));
+  app.get("/test", (_req, res) => {
+    res.status(200).send("Hello World");
+  });
+
   it("should set session cookie", async () => {
     await request(app)
       .get("/test")

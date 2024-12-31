@@ -1,5 +1,6 @@
 import { createClient } from "redis";
 import { Store } from "../models/store";
+import { RedisStore } from "connect-redis";
 
 export class RedisService implements Store {
   private _client;
@@ -40,4 +41,9 @@ export class RedisService implements Store {
   }
 }
 
-export default new RedisService();
+export const redisService = new RedisService();
+
+export const redisStore = new RedisStore({
+  client: redisService.client,
+  ttl: 3600,
+});
