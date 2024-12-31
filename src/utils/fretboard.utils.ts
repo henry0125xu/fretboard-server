@@ -5,7 +5,7 @@ import {
   DEFAULT_NUM_FRETS,
 } from "../models/fretboard";
 import { String } from "../models/string";
-import { initailizeString, getFret } from "./stringUtils";
+import { initailizeString, getFret } from "./string.utils";
 
 export function initializeFretboard(
   openStrings: FullNote[] = DEFAULT_OPEN_STRINGS,
@@ -65,6 +65,9 @@ export function getString(fretboard: Fretboard, stringIndex: number): String {
 export function deleteString(fretboard: Fretboard, stringIndex: number): void {
   if (!isValidStringIndex(fretboard, stringIndex)) {
     throw new Error("Invalid string index");
+  }
+  if (fretboard.strings.length == 1) {
+    throw new Error("Number of strings must be larger than 0");
   }
   fretboard.strings.splice(stringIndex, 1);
 }

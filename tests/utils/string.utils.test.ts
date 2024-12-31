@@ -1,7 +1,7 @@
 import { Fret } from "../../src/models/fret";
 import { String } from "../../src/models/string";
-import * as utils from "../../src/utils/stringUtils";
-import * as fretUtils from "../../src/utils/fretUtils";
+import * as utils from "../../src/utils/string.utils";
+import * as fretUtils from "../../src/utils/fret.utils";
 
 describe("initailizeString function", () => {
   it("should initailize String instance with correct process and return type", () => {

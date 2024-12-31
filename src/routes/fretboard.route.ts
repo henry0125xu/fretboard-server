@@ -10,8 +10,16 @@ routes.post("/reset", (req, res, next) =>
   controller.resetFretboard(req, res, next)
 );
 
+routes.post("/strings/:stringId", (req, res, next) =>
+  controller.insertString(req, res, next)
+);
+
+routes.delete("/strings/:stringId", (req, res, next) =>
+  controller.deleteString(req, res, next)
+);
+
 routes.patch("/strings/:stringId", (req, res, next) =>
-  controller.updateOpenString(req, res, next)
+  controller.updateString(req, res, next)
 );
 
 routes.patch("/frets", (req, res, next) =>

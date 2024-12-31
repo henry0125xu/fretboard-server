@@ -1,8 +1,8 @@
 import { FullNote } from "../models/note";
 import { Fret } from "../models/fret";
 import { String } from "../models/string";
-import { mapFullNoteToMIDINoteNumber } from "../utils/noteUtils";
-import { updateMIDINoteNumber } from "./fretUtils";
+import { mapFullNoteToMIDINoteNumber } from "./note.utils";
+import { updateMIDINoteNumber } from "./fret.utils";
 
 export function initailizeString(
   openString: FullNote,

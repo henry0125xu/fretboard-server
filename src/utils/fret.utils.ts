@@ -3,7 +3,7 @@ import { Fret } from "../models/fret";
 import {
   mapMIDINoteNumberToPitchClass,
   mapMIDINoteNumberToEnharmonicFullNotes,
-} from "./noteUtils";
+} from "./note.utils";
 
 export function initializeFret(midiNoteNumber: number): Fret {
   const fret = new Fret();

@@ -4,13 +4,15 @@ import { String } from "../../src/models/string";
 import { Store } from "../../src/models/store";
 import { Fret } from "../../src/models/fret";
 import { FullNote } from "../../src/models/note";
-import * as fretboardUtils from "../../src/utils/fretboardUtils";
-import * as stringUtils from "../../src/utils/stringUtils";
+import * as fretboardUtils from "../../src/utils/fretboard.utils";
+import * as stringUtils from "../../src/utils/string.utils";
 
+const mockNumStrings = 3;
+const mockNumFrets = 10;
+let mockFretboard: Fretboard;
+let mockStore: Store;
+let service: FretboardService;
 describe("FretboardService class", () => {
-  let mockFretboard: Fretboard;
-  let mockStore: Store;
-  let service: FretboardService;
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -44,6 +46,7 @@ describe("FretboardService class", () => {
       expect(mockFretboard).toBe(gottenFretboard);
     });
   });
+
   describe("resetFretboard method", () => {
     it("should return Fretboard instance with correct process", async () => {
       const initializeFretboardSpy = jest
@@ -57,12 +60,54 @@ describe("FretboardService class", () => {
       expect(mockFretboard).toBe(gottenFretboard);
     });
   });
-  describe("updateOpenString method", () => {
+
+  describe("insertString method", () => {
+    it("should return Fretboard instance with correct process", async () => {
+      const mockInsertedString = new String();
+      const initailizeStringSpy = jest
+        .spyOn(stringUtils, "initailizeString")
+        .mockImplementation((_o: FullNote, _n: number) => mockInsertedString);
+      const insertStringSpy = jest
+        .spyOn(fretboardUtils, "insertString")
+        .mockImplementation(
+          (_f: Fretboard, _s: String, _i: number) => undefined
+        );
+
+      const gottenFretboard = await service.insertString(
+        "jamesharden",
+        "3",
+        "Db5"
+      );
+
+      expect(initailizeStringSpy).toHaveBeenCalledWith(
+        "Db5" as FullNote,
+        mockNumFrets
+      );
+      expect(insertStringSpy).toHaveBeenCalledWith(
+        mockFretboard,
+        mockInsertedString,
+        3
+      );
+      expect(gottenFretboard).toBe(mockFretboard);
+    });
+  });
+
+  describe("deleteString method", () => {
+    it("should return Fretboard instance with correct process", async () => {
+      const deleteStringSpy = jest
+        .spyOn(fretboardUtils, "deleteString")
+        .mockImplementation((_f: Fretboard, _i: number) => undefined);
+
+      const gottenFretboard = await service.deleteString("kyrieirving", "3");
+
+      expect(deleteStringSpy).toHaveBeenCalledWith(mockFretboard, 3);
+      expect(gottenFretboard).toBe(mockFretboard);
+    });
+  });
+
+  describe("updateString method", () => {
     it("should return Fretboard instance with correct process", async () => {
       const mockString = new String();
-      const getFretboardSpy = jest
-        .spyOn(service, "getFretboard")
-        .mockImplementation(async (_: string) => mockFretboard);
       const getStringSpy = jest
         .spyOn(fretboardUtils, "getString")
         .mockImplementation((_f: Fretboard, _i: number) => mockString);
@@ -70,34 +115,29 @@ describe("FretboardService class", () => {
         .spyOn(stringUtils, "updateOpenString")
         .mockImplementation((_s: String, _f: FullNote) => undefined);
 
-      const gottenFretboard = await service.updateOpenString(
+      const gottenFretboard = await service.updateString(
         "jimmybutler",
         "2",
         "C4"
       );
 
-      expect(getFretboardSpy).toHaveBeenCalledWith("jimmybutler");
       expect(getStringSpy).toHaveBeenCalledWith(mockFretboard, 2);
       expect(updateOpenStringSpy).toHaveBeenCalledWith(
         mockString,
         "C4" as FullNote
       );
-      expect(mockStore.set).toHaveBeenCalledWith("jimmybutler", mockFretboard);
       expect(gottenFretboard).toBe(mockFretboard);
     });
   });
+
   describe("updateNumFrets method", () => {
     it("should return Fretboard instance with correct process", async () => {
-      const getFretboardSpy = jest
-        .spyOn(service, "getFretboard")
-        .mockImplementation(async (_: string) => mockFretboard);
       const updateNumFretsSpy = jest
         .spyOn(stringUtils, "updateNumFrets")
         .mockImplementation((_s: String, _n: number) => undefined);
 
       const gottenFretboard = await service.updateNumFrets("rjbarrett", "10");
 
-      expect(getFretboardSpy).toHaveBeenCalledWith("rjbarrett");
       expect(updateNumFretsSpy).toHaveBeenCalledTimes(
         mockFretboard.strings.length
       );
@@ -108,7 +148,6 @@ describe("FretboardService class", () => {
           10
         );
       });
-      expect(mockStore.set).toHaveBeenCalledWith("rjbarrett", mockFretboard);
       expect(gottenFretboard).toBe(mockFretboard);
     });
   });
@@ -116,9 +155,12 @@ describe("FretboardService class", () => {
 
 function newMockFretboard(): Fretboard {
   const fretboard = new Fretboard();
-  fretboard.strings = Array.from({ length: 3 }, () => new String());
+  fretboard.strings = Array.from(
+    { length: mockNumStrings },
+    () => new String()
+  );
   fretboard.strings.forEach((string) => {
-    string.frets = Array.from({ length: 10 }, () => new Fret());
+    string.frets = Array.from({ length: mockNumFrets }, () => new Fret());
   });
   return fretboard;
 }

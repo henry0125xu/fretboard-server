@@ -1,5 +1,5 @@
 import { Fret } from "../../src/models/fret";
-import * as utils from "../../src/utils/fretUtils";
+import * as utils from "../../src/utils/fret.utils";
 
 describe("initializeFret function", () => {
   it("should initailize Fret instance with correct process and return type", () => {

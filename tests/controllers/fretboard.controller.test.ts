@@ -86,30 +86,92 @@ describe("FretboardController class", () => {
     });
   });
 
-  describe("updateOpenString method", () => {
+  describe("insertString method", () => {
     it("should return fretboard on success", async () => {
-      mockFretboardService.updateOpenString.mockResolvedValue(mockFretboard);
+      mockFretboardService.insertString.mockResolvedValue(mockFretboard);
+
+      const controller = new FretboardController(mockFretboardService);
+      const req = { body: { stringId: "2", openString: "Db4" } };
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+      const next = jest.fn();
+
+      await controller.insertString(req as any, res as any, next);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ fretboard: mockFretboard });
+    });
+
+    it("should call next with an error if insertString throws", async () => {
+      mockFretboardService.insertString.mockRejectedValue(mockError);
+
+      const controller = new FretboardController(mockFretboardService);
+      const req = { body: { stringId: "2", openString: "Db4" } };
+      const res = { status: jest.fn(), json: jest.fn() };
+      const next = jest.fn();
+
+      await controller.insertString(req as any, res as any, next);
+
+      expect(next).toHaveBeenCalledWith(mockError);
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("deleteString method", () => {
+    it("should return fretboard on success", async () => {
+      mockFretboardService.deleteString.mockResolvedValue(mockFretboard);
+
+      const controller = new FretboardController(mockFretboardService);
+      const req = { body: { stringId: "2" } };
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+      const next = jest.fn();
+
+      await controller.deleteString(req as any, res as any, next);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ fretboard: mockFretboard });
+    });
+
+    it("should call next with an error if deleteString throws", async () => {
+      mockFretboardService.deleteString.mockRejectedValue(mockError);
+
+      const controller = new FretboardController(mockFretboardService);
+      const req = { body: { stringId: "2" } };
+      const res = { status: jest.fn(), json: jest.fn() };
+      const next = jest.fn();
+
+      await controller.deleteString(req as any, res as any, next);
+
+      expect(next).toHaveBeenCalledWith(mockError);
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("updateString method", () => {
+    it("should return fretboard on success", async () => {
+      mockFretboardService.updateString.mockResolvedValue(mockFretboard);
 
       const controller = new FretboardController(mockFretboardService);
       const req = { params: { stringId: "0" }, body: { openString: "D4" } };
       const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
       const next = jest.fn();
 
-      await controller.updateOpenString(req as any, res as any, next);
+      await controller.updateString(req as any, res as any, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ fretboard: mockFretboard });
     });
 
-    it("should call next with an error if updateOpenString throws", async () => {
-      mockFretboardService.updateOpenString.mockRejectedValue(mockError);
+    it("should call next with an error if updateString throws", async () => {
+      mockFretboardService.updateString.mockRejectedValue(mockError);
 
       const controller = new FretboardController(mockFretboardService);
       const req = { params: { stringId: "0" }, body: { openString: "D4" } };
       const res = { status: jest.fn(), json: jest.fn() };
       const next = jest.fn();
 
-      await controller.updateOpenString(req as any, res as any, next);
+      await controller.updateString(req as any, res as any, next);
 
       expect(next).toHaveBeenCalledWith(mockError);
       expect(res.status).not.toHaveBeenCalled();
@@ -122,7 +184,7 @@ describe("FretboardController class", () => {
       mockFretboardService.updateNumFrets.mockResolvedValue(mockFretboard);
 
       const controller = new FretboardController(mockFretboardService);
-      const req = { body: { numFrets: 15 } };
+      const req = { body: { numFrets: "15" } };
       const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
       const next = jest.fn();
 
@@ -136,7 +198,7 @@ describe("FretboardController class", () => {
       mockFretboardService.updateNumFrets.mockRejectedValue(mockError);
 
       const controller = new FretboardController(mockFretboardService);
-      const req = { body: { numFrets: 15 } };
+      const req = { body: { numFrets: "15" } };
       const res = { status: jest.fn(), json: jest.fn() };
       const next = jest.fn();
 

@@ -9,9 +9,15 @@ describe("parseNumber function", () => {
     expect(parsers.parseNumber("+0")).toBe(0);
     expect(parsers.parseNumber("0")).toBe(0);
     expect(parsers.parseNumber("-0")).toBe(0);
+    expect(parsers.parseNumber("066")).toBe(66);
+    expect(parsers.parseNumber("+0066")).toBe(66);
+    expect(parsers.parseNumber("-00066")).toBe(-66);
     expect(parsers.parseNumber("80000")).toBe(80000);
     expect(parsers.parseNumber("+6666")).toBe(6666);
     expect(parsers.parseNumber("-100000")).toBe(-100000);
+    expect(parsers.parseNumber("0.25")).toBe(0.25);
+    expect(parsers.parseNumber("+000.250")).toBe(0.25);
+    expect(parsers.parseNumber("-0000.25000")).toBe(-0.25);
   });
   it("should throw errors", () => {
     expect(() => parsers.parseNumber("zxc")).toThrow(
@@ -37,6 +43,12 @@ describe("parseNumber function", () => {
     );
     expect(() => parsers.parseNumber("--55")).toThrow(
       new Error("Invalid format: --55")
+    );
+    expect(() => parsers.parseNumber("0..5")).toThrow(
+      new Error("Invalid format: 0..5")
+    );
+    expect(() => parsers.parseNumber("0+0.5")).toThrow(
+      new Error("Invalid format: 0+0.5")
     );
   });
 });

@@ -28,17 +28,39 @@ export class FretboardController {
     }
   }
 
-  public async updateOpenString(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  public async insertString(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.sessionID;
+      const { stringId, openString } = req.body;
+      const fretboard = await this.service.insertString(
+        userId,
+        stringId,
+        openString
+      );
+      res.status(200).json({ fretboard: fretboard });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  public async deleteString(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.sessionID;
+      const { stringId } = req.body;
+      const fretboard = await this.service.deleteString(userId, stringId);
+      res.status(200).json({ fretboard: fretboard });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  public async updateString(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.sessionID;
       const stringId = req.params.stringId;
       const { openString } = req.body;
 
-      const fretboard = await this.service.updateOpenString(
+      const fretboard = await this.service.updateString(
         userId,
         stringId,
         openString

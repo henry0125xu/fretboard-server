@@ -6,8 +6,8 @@ import {
 } from "../../src/models/fretboard";
 import { FullNote } from "../../src/models/note";
 import { String } from "../../src/models/string";
-import * as utils from "../../src/utils/fretboardUtils";
-import * as stringUtils from "../../src/utils/stringUtils";
+import * as utils from "../../src/utils/fretboard.utils";
+import * as stringUtils from "../../src/utils/string.utils";
 
 describe("initailizeString function", () => {
   it("should initailize default Fretboard instance with correct process and return type", () => {
@@ -160,6 +160,14 @@ describe("deleteString function", () => {
     expect(() => utils.deleteString(fretboard, 8)).toThrow(
       new Error("Invalid string index")
     );
+  });
+  it("should throw errors and leave 1 string", () => {
+    expect(() => {
+      while (true) {
+        utils.deleteString(fretboard, 0);
+      }
+    }).toThrow(new Error("Number of strings must be larger than 0"));
+    expect(fretboard.strings.length).toBe(1);
   });
 });
 

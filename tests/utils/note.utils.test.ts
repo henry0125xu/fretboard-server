@@ -3,7 +3,7 @@ import {
   mapFullNoteToPitchClass,
   mapMIDINoteNumberToPitchClass,
   mapMIDINoteNumberToEnharmonicFullNotes,
-} from "../../src/utils/noteUtils";
+} from "../../src/utils/note.utils";
 
 describe("mapFullNoteToMIDINoteNumber function", () => {
   it("should return correct MIDI note number for valid FullNote", () => {
