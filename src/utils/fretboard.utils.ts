@@ -15,7 +15,9 @@ export function initializeFretboard(
     throw new Error("Number of strings must be larger than 0");
   }
   if (numFrets <= 0) {
-    throw new Error("Number of frets must be larger than 0");
+    throw new Error(
+      "Number of frets must be larger than 0 ( including open string )"
+    );
   }
 
   const fretboard = new Fretboard();

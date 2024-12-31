@@ -9,7 +9,7 @@ export type EnharmonicBasicNotes = BasicNote[];
 export type EnharmonicFullNotes = FullNote[];
 
 export const MIDI_C4: number = 60;
-export const MIDI_LO: number = 21;
+export const MIDI_LO: number = 0;
 export const MIDI_HI: number = 128;
 
 const BASE_NOTE_PATTERN = `([A-G])([#b]{0,2})`;

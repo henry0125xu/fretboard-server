@@ -91,7 +91,7 @@ describe("FretboardController class", () => {
       mockFretboardService.insertString.mockResolvedValue(mockFretboard);
 
       const controller = new FretboardController(mockFretboardService);
-      const req = { body: { stringId: "2", openString: "Db4" } };
+      const req = { params: { stringId: "2" }, body: { openString: "Db4" } };
       const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
       const next = jest.fn();
 
@@ -105,7 +105,7 @@ describe("FretboardController class", () => {
       mockFretboardService.insertString.mockRejectedValue(mockError);
 
       const controller = new FretboardController(mockFretboardService);
-      const req = { body: { stringId: "2", openString: "Db4" } };
+      const req = { params: { stringId: "2" }, body: { openString: "Db4" } };
       const res = { status: jest.fn(), json: jest.fn() };
       const next = jest.fn();
 
@@ -122,7 +122,7 @@ describe("FretboardController class", () => {
       mockFretboardService.deleteString.mockResolvedValue(mockFretboard);
 
       const controller = new FretboardController(mockFretboardService);
-      const req = { body: { stringId: "2" } };
+      const req = { params: { stringId: "2" } };
       const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
       const next = jest.fn();
 
@@ -136,7 +136,7 @@ describe("FretboardController class", () => {
       mockFretboardService.deleteString.mockRejectedValue(mockError);
 
       const controller = new FretboardController(mockFretboardService);
-      const req = { body: { stringId: "2" } };
+      const req = { params: { stringId: "2" } };
       const res = { status: jest.fn(), json: jest.fn() };
       const next = jest.fn();
 

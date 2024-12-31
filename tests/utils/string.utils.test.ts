@@ -13,6 +13,19 @@ describe("initailizeString function", () => {
     expect(string).toBeInstanceOf(String);
     expect(string.openString).toBe("C#4");
   });
+  it("should throw errors or not", () => {
+    expect(() => utils.initailizeString("G#9", 1)).not.toThrow();
+    expect(() => utils.initailizeString("G#9", 2)).toThrow(
+      new Error("Invalid string configuration")
+    );
+    expect(() => utils.initailizeString("D9", 7)).not.toThrow();
+    expect(() => utils.initailizeString("D9", 8)).toThrow(
+      new Error("Invalid string configuration")
+    );
+    expect(() => utils.initailizeString("C4", 120)).toThrow(
+      new Error("Invalid string configuration")
+    );
+  });
 });
 
 describe("getFret function", () => {
@@ -58,12 +71,46 @@ describe("updateOpenString function", () => {
 
     spy.mockRestore();
   });
+  it("should throw errors or not", () => {
+    const string = new String();
+
+    string.frets = Array.from({ length: 5 }, () => new Fret());
+    string.openString = "C4";
+
+    expect(() => utils.updateOpenString(string, "F9")).toThrow(
+      new Error("Invalid string configuration")
+    );
+    expect(() => utils.updateOpenString(string, "E9")).not.toThrow();
+  });
 });
 
 describe("updateNumFrets function", () => {
+  it("should throw errors or not", () => {
+    const string = new String();
+    string.frets = Array.from({ length: 5 }, () => new Fret());
+    string.openString = "C9";
+
+    expect(() => utils.updateNumFrets(string, 0)).toThrow(
+      new Error(
+        "Number of frets must be larger than 0 ( including open string )"
+      )
+    );
+    expect(() => utils.updateNumFrets(string, 10)).toThrow(
+      new Error("Invalid string configuration")
+    );
+    expect(() => utils.updateNumFrets(string, 9)).not.toThrow();
+  });
+
   it("should throw errors", () => {
+    expect(() => utils.updateNumFrets(new String(), 0)).toThrow(
+      new Error(
+        "Number of frets must be larger than 0 ( including open string )"
+      )
+    );
     expect(() => utils.updateNumFrets(new String(), -1)).toThrow(
-      new Error("Number of frets must be larger than 0")
+      new Error(
+        "Number of frets must be larger than 0 ( including open string )"
+      )
     );
   });
 

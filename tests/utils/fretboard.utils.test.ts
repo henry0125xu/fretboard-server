@@ -9,7 +9,7 @@ import { String } from "../../src/models/string";
 import * as utils from "../../src/utils/fretboard.utils";
 import * as stringUtils from "../../src/utils/string.utils";
 
-describe("initailizeString function", () => {
+describe("initializeFretboard function", () => {
   it("should initailize default Fretboard instance with correct process and return type", () => {
     const spy = jest.spyOn(stringUtils, "initailizeString");
     const defaultNumStrings = DEFAULT_OPEN_STRINGS.length;
@@ -60,14 +60,18 @@ describe("initailizeString function", () => {
     const validOpenStrings: FullNote[] = ["C2", "D3", "G#3"];
     const validNumFrets = 9;
     const invalidOpenStrings: FullNote[] = [];
-    const invalidNumFrets = -1;
+    const invalidNumFrets = 0;
 
     expect(() =>
       utils.initializeFretboard(invalidOpenStrings, validNumFrets)
     ).toThrow(new Error("Number of strings must be larger than 0"));
     expect(() =>
       utils.initializeFretboard(validOpenStrings, invalidNumFrets)
-    ).toThrow(new Error("Number of frets must be larger than 0"));
+    ).toThrow(
+      new Error(
+        "Number of frets must be larger than 0 ( including open string )"
+      )
+    );
     expect(() =>
       utils.initializeFretboard(invalidOpenStrings, invalidNumFrets)
     ).toThrow(new Error("Number of strings must be larger than 0"));

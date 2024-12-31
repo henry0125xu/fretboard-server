@@ -62,7 +62,7 @@ describe("updateMIDINoteNumber function", () => {
     expect(actual).toEqual(expected);
   });
   it("should throw errors", () => {
-    expect(() => utils.updateMIDINoteNumber(new Fret(), 12)).toThrow(
+    expect(() => utils.updateMIDINoteNumber(new Fret(), -1)).toThrow(
       new Error("Invalid MIDI note number")
     );
   });

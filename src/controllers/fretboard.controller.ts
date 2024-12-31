@@ -31,7 +31,8 @@ export class FretboardController {
   public async insertString(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.sessionID;
-      const { stringId, openString } = req.body;
+      const stringId = req.params.stringId;
+      const { openString } = req.body;
       const fretboard = await this.service.insertString(
         userId,
         stringId,
@@ -46,7 +47,7 @@ export class FretboardController {
   public async deleteString(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.sessionID;
-      const { stringId } = req.body;
+      const stringId = req.params.stringId;
       const fretboard = await this.service.deleteString(userId, stringId);
       res.status(200).json({ fretboard: fretboard });
     } catch (err) {
