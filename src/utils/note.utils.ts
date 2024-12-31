@@ -5,6 +5,8 @@ import {
   FullNote,
   EnharmonicBasicNotes,
   EnharmonicFullNotes,
+  MIDI_LO,
+  MIDI_HI,
   MIDI_C4,
   FULL_NOTE_REGEX,
 } from "../models/note";
@@ -21,7 +23,12 @@ export function mapFullNoteToMIDINoteNumber(fullNote: FullNote): number {
   const accidentalOffset = accidentalOffsets[accidental as Accidental];
   const octaveOffset = getOctaveOffset(Number(octave) as Octave);
 
-  return ((baseValue + accidentalOffset + 12) % 12) + octaveOffset + MIDI_C4;
+  const midiNoteNumber = MIDI_C4 + baseValue + octaveOffset + accidentalOffset;
+
+  if (midiNoteNumber < MIDI_LO || midiNoteNumber > MIDI_HI) {
+    throw new Error("The full note is undefined under mapped MIDI note number");
+  }
+  return midiNoteNumber;
 }
 
 export function mapFullNoteToPitchClass(fullNote: FullNote): number {
@@ -41,6 +48,14 @@ export function mapMIDINoteNumberToEnharmonicFullNotes(
   const pitchClass = exports.mapMIDINoteNumberToPitchClass(midiNoteNumber);
   const basicNotes = pitchClassToEnharmonicBasicNotes[pitchClass];
   return toEnharmonicFullNotes(basicNotes, octave);
+}
+
+export function mapMIDINoteNumberToFrequency(
+  midiNoteNumber: number,
+  decimalPlaces: number = 2
+): number {
+  const frequency = 440 * Math.pow(2, (midiNoteNumber - 69) / 12);
+  return parseFloat(frequency.toFixed(decimalPlaces));
 }
 
 const baseValues: Record<Note, number> = {

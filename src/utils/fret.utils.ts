@@ -3,6 +3,7 @@ import { Fret } from "../models/fret";
 import {
   mapMIDINoteNumberToPitchClass,
   mapMIDINoteNumberToEnharmonicFullNotes,
+  mapMIDINoteNumberToFrequency,
 } from "./note.utils";
 
 export function initializeFret(midiNoteNumber: number): Fret {
@@ -18,6 +19,7 @@ export function updateMIDINoteNumber(fret: Fret, midiNoteNumber: number): void {
   fret.midiNoteNumber = midiNoteNumber;
   fret.pitchClass = mapMIDINoteNumberToPitchClass(midiNoteNumber);
   fret.enharmonicNotes = mapMIDINoteNumberToEnharmonicFullNotes(midiNoteNumber);
+  fret.frequency = mapMIDINoteNumberToFrequency(midiNoteNumber);
 }
 
 function isValidMIDINoteNumber(midiNoteNumber: number): boolean {
