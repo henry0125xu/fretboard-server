@@ -9,6 +9,8 @@ import {
   MIDI_HI,
   MIDI_C4,
   FULL_NOTE_REGEX,
+  BasicNote,
+  BASIC_NOTE_REGEX,
 } from "../models/note";
 
 export function mapFullNoteToMIDINoteNumber(fullNote: FullNote): number {
@@ -35,6 +37,17 @@ export function mapFullNoteToPitchClass(fullNote: FullNote): number {
   return exports.mapMIDINoteNumberToPitchClass(
     exports.mapFullNoteToMIDINoteNumber(fullNote)
   );
+}
+
+export function mapBasicNoteToPitchClass(basicNote: BasicNote): number {
+  const match = basicNote.match(BASIC_NOTE_REGEX);
+  if (!match) {
+    throw new Error(`Invalid format: ${basicNote}`);
+  }
+  const [, baseNote, accidental] = match;
+  const baseValue = baseValues[baseNote as Note];
+  const accidentalOffset = accidentalOffsets[accidental as Accidental];
+  return (baseValue + accidentalOffset + 12) % 12;
 }
 
 export function mapMIDINoteNumberToPitchClass(midiNoteNumber: number): number {

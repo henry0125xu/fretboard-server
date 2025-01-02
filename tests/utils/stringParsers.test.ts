@@ -53,6 +53,53 @@ describe("parseNumber function", () => {
   });
 });
 
+describe("parseBasicNote function", () => {
+  it("should parse correcly", () => {
+    expect(() => parsers.parseBasicNote("C")).not.toThrow();
+    expect(() => parsers.parseBasicNote("G")).not.toThrow();
+    expect(() => parsers.parseBasicNote("C#")).not.toThrow();
+    expect(() => parsers.parseBasicNote("Bb")).not.toThrow();
+    expect(() => parsers.parseBasicNote("D##")).not.toThrow();
+    expect(() => parsers.parseBasicNote("Cbb")).not.toThrow();
+    expect(() => parsers.parseBasicNote("A")).not.toThrow();
+  });
+  it("should throw errors", () => {
+    expect(() => parsers.parseBasicNote("C4")).toThrow(
+      new Error("Invalid format: C4")
+    );
+    expect(() => parsers.parseBasicNote("#C")).toThrow(
+      new Error("Invalid format: #C")
+    );
+    expect(() => parsers.parseBasicNote("#G7")).toThrow(
+      new Error("Invalid format: #G7")
+    );
+    expect(() => parsers.parseBasicNote("g#7")).toThrow(
+      new Error("Invalid format: g#7")
+    );
+    expect(() => parsers.parseBasicNote("C###4")).toThrow(
+      new Error("Invalid format: C###4")
+    );
+    expect(() => parsers.parseBasicNote("Bbbb0")).toThrow(
+      new Error("Invalid format: Bbbb0")
+    );
+    expect(() => parsers.parseBasicNote("##D")).toThrow(
+      new Error("Invalid format: ##D")
+    );
+    expect(() => parsers.parseBasicNote("D9##")).toThrow(
+      new Error("Invalid format: D9##")
+    );
+    expect(() => parsers.parseBasicNote("1Cbb")).toThrow(
+      new Error("Invalid format: 1Cbb")
+    );
+    expect(() => parsers.parseBasicNote("4A")).toThrow(
+      new Error("Invalid format: 4A")
+    );
+    expect(() => parsers.parseBasicNote("a3")).toThrow(
+      new Error("Invalid format: a3")
+    );
+  });
+});
+
 describe("parseFullNote function", () => {
   it("should parse correcly", () => {
     expect(() => parsers.parseFullNote("C4")).not.toThrow();

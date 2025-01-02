@@ -1,11 +1,13 @@
-import { FullNote } from "../models/note";
+import { BasicNote, FullNote } from "../models/note";
 import {
   Fretboard,
   DEFAULT_OPEN_STRINGS,
   DEFAULT_NUM_FRETS,
 } from "../models/fretboard";
 import { String } from "../models/string";
+import { mapBasicNoteToPitchClass } from "./note.utils";
 import { initailizeString, getFret } from "./string.utils";
+import { Fret } from "../models/fret";
 
 export function initializeFretboard(
   openStrings: FullNote[] = DEFAULT_OPEN_STRINGS,
@@ -25,36 +27,6 @@ export function initializeFretboard(
     initailizeString(openString, numFrets)
   );
   return fretboard;
-}
-
-export function pressFret(
-  fretboard: Fretboard,
-  stringIndex: number,
-  fretIndex: number
-): void {
-  const string = exports.getString(fretboard, stringIndex);
-  const fret = getFret(string, fretIndex);
-  fret.isPressed = true;
-}
-
-export function releaseFret(
-  fretboard: Fretboard,
-  stringIndex: number,
-  fretIndex: number
-): void {
-  const string = exports.getString(fretboard, stringIndex);
-  const fret = getFret(string, fretIndex);
-  fret.isPressed = false;
-}
-
-export function isFretPressed(
-  fretboard: Fretboard,
-  stringIndex: number,
-  fretIndex: number
-): boolean {
-  const string = exports.getString(fretboard, stringIndex);
-  const fret = getFret(string, fretIndex);
-  return fret.isPressed;
 }
 
 export function getString(fretboard: Fretboard, stringIndex: number): String {
@@ -86,6 +58,34 @@ export function insertString(
     throw new Error("Invalid string index");
   }
   fretboard.strings.splice(stringIndex, 0, string);
+}
+
+export function pressBasicNotes(
+  fretboard: Fretboard,
+  basicNotes: BasicNote[]
+): void {
+  const hasPitchClass = Array.from({ length: 12 }, () => false);
+  basicNotes.forEach((basicNote) => {
+    const pitchClass = mapBasicNoteToPitchClass(basicNote);
+    hasPitchClass[pitchClass] = true;
+  });
+
+  exports.forEachFret(fretboard, (fret: Fret) => {
+    if (hasPitchClass[fret.pitchClass]) {
+      fret.isPressed = true;
+    } else {
+      fret.isPressed = false;
+    }
+  });
+}
+
+export function forEachFret(
+  fretboard: Fretboard,
+  callback: (fret: Fret) => void
+): void {
+  fretboard.strings.forEach((string) => {
+    string.frets.forEach((fret) => callback(fret));
+  });
 }
 
 function isValidStringIndex(

@@ -78,46 +78,6 @@ describe("initializeFretboard function", () => {
   });
 });
 
-describe("pressFret, releaseFret, and isFretPressed functions", () => {
-  const fretboard = new Fretboard();
-  const numStrings = 5;
-  const numFrets = 11;
-  beforeEach(() => {
-    fretboard.strings = Array.from({ length: numStrings }, () => new String());
-    fretboard.strings.forEach(
-      (string) =>
-        (string.frets = Array.from({ length: numFrets }, () => new Fret()))
-    );
-  });
-
-  it("should press the fret on the correct position", () => {
-    utils.pressFret(fretboard, 3, 5);
-    expect(fretboard.strings[3].frets[5].isPressed).toBe(true);
-  });
-  it("should release the fret on the correct position", () => {
-    utils.releaseFret(fretboard, 1, 8);
-    expect(fretboard.strings[1].frets[8].isPressed).toBe(false);
-  });
-  it("should release the fret on the correct position", () => {
-    fretboard.strings[4].frets[10].isPressed = true;
-    expect(utils.isFretPressed(fretboard, 4, 10)).toBe(
-      fretboard.strings[4].frets[10].isPressed
-    );
-    fretboard.strings[4].frets[10].isPressed = false;
-    expect(utils.isFretPressed(fretboard, 4, 10)).toBe(
-      fretboard.strings[4].frets[10].isPressed
-    );
-  });
-  it("should throw errors", () => {
-    expect(() => utils.pressFret(fretboard, 6, 5)).toThrow();
-    expect(() => utils.pressFret(fretboard, 2, 15)).toThrow();
-    expect(() => utils.releaseFret(fretboard, -2, 5)).toThrow();
-    expect(() => utils.releaseFret(fretboard, 2, -5)).toThrow();
-    expect(() => utils.isFretPressed(fretboard, 42, -5)).toThrow();
-    expect(() => utils.isFretPressed(fretboard, 77, 100)).toThrow();
-  });
-});
-
 describe("getString function", () => {
   const fretboard = new Fretboard();
   beforeEach(() => {
@@ -208,5 +168,84 @@ describe("insertString function", () => {
   it("should not throw errors", () => {
     expect(() => utils.insertString(fretboard, new String(), 0)).not.toThrow();
     expect(() => utils.insertString(fretboard, new String(), 6)).not.toThrow();
+  });
+});
+
+describe("forEachFret function", () => {
+  const fretboard = new Fretboard();
+  beforeEach(() => {
+    fretboard.strings = Array.from({ length: 3 }, () => new String());
+    fretboard.strings.forEach(
+      (string) => (string.frets = Array.from({ length: 4 }, () => new Fret()))
+    );
+    fretboard.strings.forEach((string, stringIndex) => {
+      string.frets.forEach(
+        (fret, fretIndex) => (fret.frequency = stringIndex * 2 + fretIndex * 3)
+      );
+    });
+  });
+  it("should insert the string correctly", () => {
+    const callback = jest.fn().mockReturnValue(undefined);
+
+    utils.forEachFret(fretboard, callback);
+
+    expect(callback).toHaveBeenCalledTimes(12);
+    expect(callback).toHaveBeenNthCalledWith(1, fretboard.strings[0].frets[0]);
+    expect(callback).toHaveBeenNthCalledWith(2, fretboard.strings[0].frets[1]);
+    expect(callback).toHaveBeenNthCalledWith(3, fretboard.strings[0].frets[2]);
+    expect(callback).toHaveBeenNthCalledWith(4, fretboard.strings[0].frets[3]);
+    expect(callback).toHaveBeenNthCalledWith(5, fretboard.strings[1].frets[0]);
+    expect(callback).toHaveBeenNthCalledWith(6, fretboard.strings[1].frets[1]);
+    expect(callback).toHaveBeenNthCalledWith(7, fretboard.strings[1].frets[2]);
+    expect(callback).toHaveBeenNthCalledWith(8, fretboard.strings[1].frets[3]);
+    expect(callback).toHaveBeenNthCalledWith(9, fretboard.strings[2].frets[0]);
+    expect(callback).toHaveBeenNthCalledWith(10, fretboard.strings[2].frets[1]);
+    expect(callback).toHaveBeenNthCalledWith(11, fretboard.strings[2].frets[2]);
+    expect(callback).toHaveBeenNthCalledWith(12, fretboard.strings[2].frets[3]);
+  });
+});
+
+describe("forEachFret function", () => {
+  const fretboard = new Fretboard();
+  beforeEach(() => {
+    fretboard.strings = Array.from({ length: 3 }, () => new String());
+    fretboard.strings.forEach(
+      (string) => (string.frets = Array.from({ length: 4 }, () => new Fret()))
+    );
+  });
+  it("should press frets correctly", () => {
+    fretboard.strings.forEach((string) =>
+      string.frets.forEach((fret) => {
+        fret.isPressed = Math.random() < 0.5;
+      })
+    );
+
+    fretboard.strings[0].frets[0].pitchClass = 2;
+    fretboard.strings[0].frets[1].pitchClass = 3;
+    fretboard.strings[0].frets[2].pitchClass = 4;
+    fretboard.strings[0].frets[3].pitchClass = 5;
+    fretboard.strings[1].frets[0].pitchClass = 11;
+    fretboard.strings[1].frets[1].pitchClass = 0;
+    fretboard.strings[1].frets[2].pitchClass = 1;
+    fretboard.strings[1].frets[3].pitchClass = 2;
+    fretboard.strings[2].frets[0].pitchClass = 7;
+    fretboard.strings[2].frets[1].pitchClass = 8;
+    fretboard.strings[2].frets[2].pitchClass = 9;
+    fretboard.strings[2].frets[3].pitchClass = 10;
+
+    utils.pressBasicNotes(fretboard, ["C", "E", "G"]);
+
+    expect(fretboard.strings[0].frets[0].isPressed).toBe(false);
+    expect(fretboard.strings[0].frets[1].isPressed).toBe(false);
+    expect(fretboard.strings[0].frets[2].isPressed).toBe(true);
+    expect(fretboard.strings[0].frets[3].isPressed).toBe(false);
+    expect(fretboard.strings[1].frets[0].isPressed).toBe(false);
+    expect(fretboard.strings[1].frets[1].isPressed).toBe(true);
+    expect(fretboard.strings[1].frets[2].isPressed).toBe(false);
+    expect(fretboard.strings[1].frets[3].isPressed).toBe(false);
+    expect(fretboard.strings[2].frets[0].isPressed).toBe(true);
+    expect(fretboard.strings[2].frets[1].isPressed).toBe(false);
+    expect(fretboard.strings[2].frets[2].isPressed).toBe(false);
+    expect(fretboard.strings[2].frets[3].isPressed).toBe(false);
   });
 });

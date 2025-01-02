@@ -18,12 +18,16 @@ routes.delete("/strings/:stringId", (req, res, next) =>
   controller.deleteString(req, res, next)
 );
 
-routes.patch("/strings/:stringId", (req, res, next) =>
-  controller.updateString(req, res, next)
+routes.put("/strings/:stringId/open-string", (req, res, next) =>
+  controller.updateOpenString(req, res, next)
 );
 
-routes.patch("/frets", (req, res, next) =>
+routes.put("/num-frets", (req, res, next) =>
   controller.updateNumFrets(req, res, next)
+);
+
+routes.post("/press-notes", (req, res, next) =>
+  controller.pressNotes(req, res, next)
 );
 
 export default routes;

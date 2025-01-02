@@ -55,13 +55,17 @@ export class FretboardController {
     }
   }
 
-  public async updateString(req: Request, res: Response, next: NextFunction) {
+  public async updateOpenString(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const userId = req.sessionID;
       const stringId = req.params.stringId;
       const { openString } = req.body;
 
-      const fretboard = await this.service.updateString(
+      const fretboard = await this.service.updateOpenString(
         userId,
         stringId,
         openString
@@ -78,6 +82,17 @@ export class FretboardController {
       const userId = req.sessionID;
       const { numFrets } = req.body;
       const fretboard = await this.service.updateNumFrets(userId, numFrets);
+      res.status(200).json({ fretboard: fretboard });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  public async pressNotes(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.sessionID;
+      const { notes } = req.body;
+      const fretboard = await this.service.pressNotes(userId, notes);
       res.status(200).json({ fretboard: fretboard });
     } catch (err) {
       next(err);

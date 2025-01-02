@@ -1,6 +1,7 @@
 import {
   mapFullNoteToMIDINoteNumber,
   mapFullNoteToPitchClass,
+  mapBasicNoteToPitchClass,
   mapMIDINoteNumberToPitchClass,
   mapMIDINoteNumberToEnharmonicFullNotes,
   mapMIDINoteNumberToFrequency,
@@ -32,10 +33,29 @@ describe("mapFullNoteToMIDINoteNumber function", () => {
 
 describe("mapFullNoteToPitchClass function", () => {
   it("should return correct pitch classes for given inputs", () => {
+    expect(mapFullNoteToPitchClass("Cb4")).toBe(11);
+    expect(mapFullNoteToPitchClass("Cbb4")).toBe(10);
     expect(mapFullNoteToPitchClass("C4")).toBe(0);
     expect(mapFullNoteToPitchClass("D#5")).toBe(3);
     expect(mapFullNoteToPitchClass("Ab3")).toBe(8);
     expect(mapFullNoteToPitchClass("E##2")).toBe(6);
+    expect(mapFullNoteToPitchClass("B3")).toBe(11);
+    expect(mapFullNoteToPitchClass("B#3")).toBe(0);
+    expect(mapFullNoteToPitchClass("B##3")).toBe(1);
+  });
+});
+
+describe("mapBasicNoteToPitchClass function", () => {
+  it("should return correct pitch classes for given inputs", () => {
+    expect(mapBasicNoteToPitchClass("Cb")).toBe(11);
+    expect(mapBasicNoteToPitchClass("Cbb")).toBe(10);
+    expect(mapBasicNoteToPitchClass("C")).toBe(0);
+    expect(mapBasicNoteToPitchClass("D#")).toBe(3);
+    expect(mapBasicNoteToPitchClass("Ab")).toBe(8);
+    expect(mapBasicNoteToPitchClass("E##")).toBe(6);
+    expect(mapBasicNoteToPitchClass("B")).toBe(11);
+    expect(mapBasicNoteToPitchClass("B#")).toBe(0);
+    expect(mapBasicNoteToPitchClass("B##")).toBe(1);
   });
 });
 

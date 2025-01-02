@@ -47,13 +47,13 @@ describe("DELETE /api/fretboard/strings/:stringId", () => {
   });
 });
 
-describe("PATCH /api/fretboard/strings/:stringId", () => {
+describe("PUT /api/fretboard/strings/:stringId/open-string", () => {
   it("should return fretboard data", async () => {
     const stringId = 3;
     const body = { openString: "D2" };
 
     const response = await request(app)
-      .patch(`/api/fretboard/strings/${stringId}`)
+      .put(`/api/fretboard/strings/${stringId}/open-string`)
       .send(body);
 
     expect(response.status).toBe(200);
@@ -61,12 +61,25 @@ describe("PATCH /api/fretboard/strings/:stringId", () => {
   });
 });
 
-describe("PATCH /api/fretboard/frets", () => {
+describe("PUT /api/fretboard/num-frets", () => {
   it("should return fretboard data", async () => {
-    const body = { numFrets: 15 };
+    const body = { numFrets: "15" };
 
     const response = await request(app)
-      .patch("/api/fretboard/frets")
+      .put("/api/fretboard/num-frets")
+      .send(body);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("fretboard");
+  });
+});
+
+describe("POST /api/fretboard/press-notes", () => {
+  it("should return fretboard data", async () => {
+    const body = { notes: ["C", "E", "G"] };
+
+    const response = await request(app)
+      .post("/api/fretboard/press-notes")
       .send(body);
 
     expect(response.status).toBe(200);

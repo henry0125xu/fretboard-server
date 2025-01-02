@@ -1,8 +1,13 @@
 import { Fretboard } from "../models/fretboard";
 import * as stringUtils from "../utils/string.utils";
 import * as fretboardUtils from "../utils/fretboard.utils";
-import { parseNumber, parseFullNote } from "../utils/stringParsers";
+import {
+  parseNumber,
+  parseBasicNote,
+  parseFullNote,
+} from "../utils/stringParsers";
 import { Store } from "../models/store";
+import { BasicNote } from "../models/note";
 
 export class FretboardService {
   private readonly store: Store;
@@ -53,7 +58,7 @@ export class FretboardService {
     });
   }
 
-  public async updateString(
+  public async updateOpenString(
     userId: string,
     stringId: string,
     openString: string
@@ -76,6 +81,15 @@ export class FretboardService {
       fretboard.strings.forEach((string) => {
         stringUtils.updateNumFrets(string, parsedNumFrets);
       });
+    });
+  }
+
+  public async pressNotes(userId: string, notes: string[]) {
+    return await this.updateFromStore(userId, (fretboard) => {
+      const parsedBasicNotes: BasicNote[] = notes.map((note) =>
+        parseBasicNote(note)
+      );
+      fretboardUtils.pressBasicNotes(fretboard, parsedBasicNotes);
     });
   }
 

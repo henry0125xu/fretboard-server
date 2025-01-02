@@ -3,7 +3,7 @@ import { Fretboard } from "../../src/models/fretboard";
 import { String } from "../../src/models/string";
 import { Store } from "../../src/models/store";
 import { Fret } from "../../src/models/fret";
-import { FullNote } from "../../src/models/note";
+import { BasicNote, FullNote } from "../../src/models/note";
 import * as fretboardUtils from "../../src/utils/fretboard.utils";
 import * as stringUtils from "../../src/utils/string.utils";
 
@@ -105,7 +105,7 @@ describe("FretboardService class", () => {
     });
   });
 
-  describe("updateString method", () => {
+  describe("updateOpenString method", () => {
     it("should return Fretboard instance with correct process", async () => {
       const mockString = new String();
       const getStringSpy = jest
@@ -115,7 +115,7 @@ describe("FretboardService class", () => {
         .spyOn(stringUtils, "updateOpenString")
         .mockImplementation((_s: String, _f: FullNote) => undefined);
 
-      const gottenFretboard = await service.updateString(
+      const gottenFretboard = await service.updateOpenString(
         "jimmybutler",
         "2",
         "C4"
@@ -148,6 +148,27 @@ describe("FretboardService class", () => {
           10
         );
       });
+      expect(gottenFretboard).toBe(mockFretboard);
+    });
+  });
+
+  describe("pressBasicNotes method", () => {
+    it("should return Fretboard instance with correct process", async () => {
+      const pressBasicNotesSpy = jest.spyOn(fretboardUtils, "pressBasicNotes");
+
+      const gottenFretboard = await service.pressNotes("derrickrose", [
+        "Eb",
+        "G",
+        "Bb",
+        "Db",
+      ]);
+
+      expect(pressBasicNotesSpy).toHaveBeenCalledWith(mockFretboard, [
+        "Eb",
+        "G",
+        "Bb",
+        "Db",
+      ] as BasicNote[]);
       expect(gottenFretboard).toBe(mockFretboard);
     });
   });
