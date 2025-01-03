@@ -8,7 +8,11 @@ export class FretboardController {
     this.service = service;
   }
 
-  public async getFretboard(req: Request, res: Response, next: NextFunction) {
+  public async getFretboard(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const userId = req.sessionID;
       const fretboard = await this.service.getFretboard(userId);
@@ -18,7 +22,11 @@ export class FretboardController {
     }
   }
 
-  public async resetFretboard(req: Request, res: Response, next: NextFunction) {
+  public async resetFretboard(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const userId = req.sessionID;
       const fretboard = await this.service.resetFretboard(userId);
@@ -28,7 +36,11 @@ export class FretboardController {
     }
   }
 
-  public async insertString(req: Request, res: Response, next: NextFunction) {
+  public async insertString(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const userId = req.sessionID;
       const stringId = req.params.stringId;
@@ -44,7 +56,11 @@ export class FretboardController {
     }
   }
 
-  public async deleteString(req: Request, res: Response, next: NextFunction) {
+  public async deleteString(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const userId = req.sessionID;
       const stringId = req.params.stringId;
@@ -59,7 +75,7 @@ export class FretboardController {
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ): Promise<void> {
     try {
       const userId = req.sessionID;
       const stringId = req.params.stringId;
@@ -77,7 +93,11 @@ export class FretboardController {
     }
   }
 
-  public async updateNumFrets(req: Request, res: Response, next: NextFunction) {
+  public async updateNumFrets(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const userId = req.sessionID;
       const { numFrets } = req.body;
@@ -88,7 +108,11 @@ export class FretboardController {
     }
   }
 
-  public async pressNotes(req: Request, res: Response, next: NextFunction) {
+  public async pressNotes(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const userId = req.sessionID;
       const { notes } = req.body;

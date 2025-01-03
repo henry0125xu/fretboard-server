@@ -1,4 +1,3 @@
-import { FullNote } from "../../src/models/note";
 import * as parsers from "../../src/utils/stringParsers";
 
 describe("parseNumber function", () => {

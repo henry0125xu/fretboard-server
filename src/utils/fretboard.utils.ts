@@ -71,11 +71,7 @@ export function pressBasicNotes(
   });
 
   exports.forEachFret(fretboard, (fret: Fret) => {
-    if (hasPitchClass[fret.pitchClass]) {
-      fret.isPressed = true;
-    } else {
-      fret.isPressed = false;
-    }
+    fret.isPressed = hasPitchClass[fret.pitchClass];
   });
 }
 
