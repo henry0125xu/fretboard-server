@@ -9,6 +9,8 @@ const controller = new FretboardController();
  * /:
  *   get:
  *     summary: Get the fretboard
+ *     tags:
+ *       - Fretboard
  *     responses:
  *       200:
  *         description: Successfully retrieved fretboard
@@ -20,6 +22,8 @@ routes.get("/", (req, res, next) => controller.getFretboard(req, res, next));
  * /reset:
  *   post:
  *     summary: Reset the fretboard
+ *     tags:
+ *       - Fretboard
  *     responses:
  *       200:
  *         description: Successfully reset fretboard
@@ -33,6 +37,8 @@ routes.post("/reset", (req, res, next) =>
  * /strings/{stringId}:
  *   post:
  *     summary: Insert a string
+ *     tags:
+ *       - Fretboard
  *     parameters:
  *       - in: path
  *         name: stringId
@@ -48,7 +54,7 @@ routes.post("/reset", (req, res, next) =>
  *             properties:
  *               openString:
  *                 type: string
- *                 example: "E"
+ *                 example: "E4"
  *     responses:
  *       200:
  *         description: Successfully inserted string
@@ -62,6 +68,8 @@ routes.post("/strings/:stringId", (req, res, next) =>
  * /strings/{stringId}:
  *   delete:
  *     summary: Delete a string
+ *     tags:
+ *       - Fretboard
  *     parameters:
  *       - in: path
  *         name: stringId
@@ -81,6 +89,8 @@ routes.delete("/strings/:stringId", (req, res, next) =>
  * /strings/{stringId}/open-string:
  *   put:
  *     summary: Update open string
+ *     tags:
+ *       - Fretboard
  *     parameters:
  *       - in: path
  *         name: stringId
@@ -96,7 +106,7 @@ routes.delete("/strings/:stringId", (req, res, next) =>
  *             properties:
  *               openString:
  *                 type: string
- *                 example: "E"
+ *                 example: "E4"
  *     responses:
  *       200:
  *         description: Successfully updated open string
@@ -110,6 +120,8 @@ routes.put("/strings/:stringId/open-string", (req, res, next) =>
  * /num-frets:
  *   put:
  *     summary: Update number of frets
+ *     tags:
+ *       - Fretboard
  *     requestBody:
  *       required: true
  *       content:
@@ -133,6 +145,8 @@ routes.put("/num-frets", (req, res, next) =>
  * /press-notes:
  *   post:
  *     summary: Press notes on the fretboard
+ *     tags:
+ *       - Fretboard
  *     requestBody:
  *       required: true
  *       content:
