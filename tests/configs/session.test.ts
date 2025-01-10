@@ -1,7 +1,7 @@
 import { RedisStore } from "connect-redis";
 import request from "supertest";
 import express from "express";
-import session from "../../src/middlewares/session";
+import session from "../../src/configs/session";
 
 describe("redisSession middleware", () => {
   const client = {
