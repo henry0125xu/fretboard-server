@@ -5,7 +5,7 @@ import {
   parseNumber,
   parseBasicNote,
   parseFullNote,
-} from "../utils/stringParsers";
+} from "../utils/stringHelpers";
 import { Store } from "../models/store";
 import { BasicNote } from "../models/note";
 

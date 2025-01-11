@@ -2,6 +2,8 @@ import { Fret } from "../../src/models/fret";
 import { String } from "../../src/models/string";
 import * as utils from "../../src/utils/string.utils";
 import * as fretUtils from "../../src/utils/fret.utils";
+import * as notesUtils from "../../src/utils/note.utils";
+import exp from "constants";
 
 describe("initailizeString function", () => {
   it("should initailize String instance with correct process and return type", () => {
@@ -52,24 +54,29 @@ describe("getFret function", () => {
 
 describe("updateOpenString function", () => {
   it("should update properties correctly", () => {
-    const spy = jest.spyOn(fretUtils, "updateMIDINoteNumber");
+    const updateMIDINoteNumberSpy = jest.spyOn(
+      fretUtils,
+      "updateMIDINoteNumber"
+    );
+
     const string = new String();
     string.frets = Array.from({ length: 5 }, () => new Fret());
     string.openString = "C4";
+    const mockPitchClassBitmap = Array.from({ length: 12 }, () => false);
 
     utils.updateOpenString(string, "D#2");
 
     expect(string.openString).toBe("D#2");
-    expect(spy).toHaveBeenCalledTimes(5);
+    expect(updateMIDINoteNumberSpy).toHaveBeenCalledTimes(5);
     for (let index = 0; index < 5; index++) {
-      expect(spy).toHaveBeenNthCalledWith(
+      expect(updateMIDINoteNumberSpy).toHaveBeenNthCalledWith(
         index + 1,
         string.frets[index],
         39 + index
       );
     }
 
-    spy.mockRestore();
+    updateMIDINoteNumberSpy.mockRestore();
   });
   it("should throw errors or not", () => {
     const string = new String();

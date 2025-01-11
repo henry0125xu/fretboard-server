@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { FretboardController } from "../controllers/fretboard.controller";
+import { FretboardController } from "../../controllers/fretboard.controller";
 
 const routes = Router();
 const controller = new FretboardController();
@@ -11,6 +11,8 @@ const controller = new FretboardController();
  *     summary: Get the fretboard
  *     tags:
  *       - Fretboard
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully retrieved fretboard
@@ -24,6 +26,8 @@ routes.get("/", (req, res, next) => controller.getFretboard(req, res, next));
  *     summary: Reset the fretboard
  *     tags:
  *       - Fretboard
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully reset fretboard
@@ -55,6 +59,8 @@ routes.post("/reset", (req, res, next) =>
  *               openString:
  *                 type: string
  *                 example: "E4"
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully inserted string
@@ -76,6 +82,8 @@ routes.post("/strings/:stringId", (req, res, next) =>
  *         required: true
  *         schema:
  *           type: string
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully deleted string
@@ -107,6 +115,8 @@ routes.delete("/strings/:stringId", (req, res, next) =>
  *               openString:
  *                 type: string
  *                 example: "E4"
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully updated open string
@@ -132,6 +142,8 @@ routes.put("/strings/:stringId/open-string", (req, res, next) =>
  *               numFrets:
  *                 type: number
  *                 example: 22
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully updated number of frets
@@ -159,6 +171,8 @@ routes.put("/num-frets", (req, res, next) =>
  *                 items:
  *                   type: string
  *                 example: ["C", "E", "G"]
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully pressed notes

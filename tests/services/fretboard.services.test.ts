@@ -174,7 +174,7 @@ describe("FretboardService class", () => {
   });
 });
 
-function newMockFretboard(): Fretboard {
+const newMockFretboard = (): Fretboard => {
   const fretboard = new Fretboard();
   fretboard.strings = Array.from(
     { length: mockNumStrings },
@@ -184,4 +184,4 @@ function newMockFretboard(): Fretboard {
     string.frets = Array.from({ length: mockNumFrets }, () => new Fret());
   });
   return fretboard;
-}
+};

@@ -1,6 +1,5 @@
 import { createClient, RedisClientType } from "redis";
 import { Store } from "../models/store";
-import { RedisStore } from "connect-redis";
 
 export class RedisService implements Store {
   public readonly client: RedisClientType;
@@ -14,14 +13,10 @@ export class RedisService implements Store {
   public async set<T>(
     key: string,
     value: T,
-    expiration?: number
+    expiration: number = 3600
   ): Promise<void> {
     const serializedValue = JSON.stringify(value);
-    if (expiration) {
-      await this.client.set(key, serializedValue, { EX: expiration });
-    } else {
-      await this.client.set(key, serializedValue);
-    }
+    await this.client.set(key, serializedValue, { EX: expiration });
   }
 
   public async get<T>(key: string): Promise<T | null> {
@@ -38,9 +33,4 @@ export class RedisService implements Store {
   }
 }
 
-export const redisService = new RedisService();
-
-export const redisStore = new RedisStore({
-  client: redisService.client,
-  ttl: 3600,
-});
+export default new RedisService();

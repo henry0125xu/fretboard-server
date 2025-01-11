@@ -27,12 +27,14 @@ describe("RedisService", () => {
   it("should set a value in Redis", async () => {
     const mockValue = { name: "test" };
     const mockKey = "testKey";
+    const mockEX = { EX: 3600 };
 
     await redisService.set(mockKey, mockValue);
 
     expect(redisService.client.set).toHaveBeenCalledWith(
       mockKey,
-      JSON.stringify(mockValue)
+      JSON.stringify(mockValue),
+      mockEX
     );
   });
 

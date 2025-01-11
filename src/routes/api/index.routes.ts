@@ -1,5 +1,5 @@
 import express from "express";
-import fretboard from "./fretboard.route";
+import fretboard from "./fretboard.routes";
 
 const router = express.Router();
 

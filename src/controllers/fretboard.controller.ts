@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { FretboardService } from "../services/fretboard.service";
-import { redisService } from "../services/redis.service";
+import redisService from "../services/redis.service";
 
 export class FretboardController {
   private readonly service: FretboardService;
@@ -14,7 +14,7 @@ export class FretboardController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const userId = req.sessionID;
+      const userId = req.userId;
       const fretboard = await this.service.getFretboard(userId);
       res.status(200).json({ fretboard: fretboard });
     } catch (err) {
@@ -28,7 +28,7 @@ export class FretboardController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const userId = req.sessionID;
+      const userId = req.userId;
       const fretboard = await this.service.resetFretboard(userId);
       res.status(200).json({ fretboard: fretboard });
     } catch (err) {
@@ -42,7 +42,7 @@ export class FretboardController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const userId = req.sessionID;
+      const userId = req.userId;
       const stringId = req.params.stringId;
       const { openString } = req.body;
       const fretboard = await this.service.insertString(
@@ -62,7 +62,7 @@ export class FretboardController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const userId = req.sessionID;
+      const userId = req.userId;
       const stringId = req.params.stringId;
       const fretboard = await this.service.deleteString(userId, stringId);
       res.status(200).json({ fretboard: fretboard });
@@ -77,7 +77,7 @@ export class FretboardController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const userId = req.sessionID;
+      const userId = req.userId;
       const stringId = req.params.stringId;
       const { openString } = req.body;
 
@@ -99,7 +99,7 @@ export class FretboardController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const userId = req.sessionID;
+      const userId = req.userId;
       const { numFrets } = req.body;
       const fretboard = await this.service.updateNumFrets(userId, numFrets);
       res.status(200).json({ fretboard: fretboard });
@@ -114,7 +114,7 @@ export class FretboardController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const userId = req.sessionID;
+      const userId = req.userId;
       const { notes } = req.body;
       const fretboard = await this.service.pressNotes(userId, notes);
       res.status(200).json({ fretboard: fretboard });

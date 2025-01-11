@@ -13,7 +13,7 @@ import {
   BASIC_NOTE_REGEX,
 } from "../models/note";
 
-export function mapFullNoteToMIDINoteNumber(fullNote: FullNote): number {
+export const mapFullNoteToMIDINoteNumber = (fullNote: FullNote): number => {
   const match = fullNote.match(FULL_NOTE_REGEX);
   if (!match) {
     throw new Error(`Invalid format: ${fullNote}`);
@@ -31,15 +31,15 @@ export function mapFullNoteToMIDINoteNumber(fullNote: FullNote): number {
     throw new Error("The full note is undefined under mapped MIDI note number");
   }
   return midiNoteNumber;
-}
+};
 
-export function mapFullNoteToPitchClass(fullNote: FullNote): number {
+export const mapFullNoteToPitchClass = (fullNote: FullNote): number => {
   return exports.mapMIDINoteNumberToPitchClass(
     exports.mapFullNoteToMIDINoteNumber(fullNote)
   );
-}
+};
 
-export function mapBasicNoteToPitchClass(basicNote: BasicNote): number {
+export const mapBasicNoteToPitchClass = (basicNote: BasicNote): number => {
   const match = basicNote.match(BASIC_NOTE_REGEX);
   if (!match) {
     throw new Error(`Invalid format: ${basicNote}`);
@@ -48,28 +48,39 @@ export function mapBasicNoteToPitchClass(basicNote: BasicNote): number {
   const baseValue = baseValues[baseNote as Note];
   const accidentalOffset = accidentalOffsets[accidental as Accidental];
   return (baseValue + accidentalOffset + 12) % 12;
-}
+};
 
-export function mapMIDINoteNumberToPitchClass(midiNoteNumber: number): number {
-  return midiNoteNumber % 12;
-}
-
-export function mapMIDINoteNumberToEnharmonicFullNotes(
+export const mapMIDINoteNumberToPitchClass = (
   midiNoteNumber: number
-): EnharmonicFullNotes {
+): number => {
+  return midiNoteNumber % 12;
+};
+
+export const mapMIDINoteNumberToEnharmonicFullNotes = (
+  midiNoteNumber: number
+): EnharmonicFullNotes => {
   const octave = toOctave(midiNoteNumber);
   const pitchClass = exports.mapMIDINoteNumberToPitchClass(midiNoteNumber);
   const basicNotes = pitchClassToEnharmonicBasicNotes[pitchClass];
   return toEnharmonicFullNotes(basicNotes, octave);
-}
+};
 
-export function mapMIDINoteNumberToFrequency(
+export const mapMIDINoteNumberToFrequency = (
   midiNoteNumber: number,
   decimalPlaces: number = 2
-): number {
+): number => {
   const frequency = 440 * Math.pow(2, (midiNoteNumber - 69) / 12);
   return parseFloat(frequency.toFixed(decimalPlaces));
-}
+};
+
+export const getPitchClassBitmap = (basicNotes: BasicNote[]): boolean[] => {
+  const hasPitchClassFlags = Array.from({ length: 12 }, () => false);
+  basicNotes.forEach((basicNote) => {
+    const pitchClass = mapBasicNoteToPitchClass(basicNote);
+    hasPitchClassFlags[pitchClass] = true;
+  });
+  return hasPitchClassFlags;
+};
 
 const baseValues: Record<Note, number> = {
   ["C"]: 0,
@@ -89,9 +100,9 @@ const accidentalOffsets: Record<Accidental, number> = {
   ["bb"]: -2,
 };
 
-function getOctaveOffset(octave: Octave): number {
+const getOctaveOffset = (octave: Octave): number => {
   return (octave - 4) * 12;
-}
+};
 
 const pitchClassToEnharmonicBasicNotes: Record<number, EnharmonicBasicNotes> = {
   0: ["C"],
@@ -108,16 +119,16 @@ const pitchClassToEnharmonicBasicNotes: Record<number, EnharmonicBasicNotes> = {
   11: ["B"],
 };
 
-function toEnharmonicFullNotes(
+const toEnharmonicFullNotes = (
   notes: EnharmonicBasicNotes,
   octave: Octave
-): EnharmonicFullNotes {
+): EnharmonicFullNotes => {
   return Array.from(
     { length: notes.length },
     (_, index) => `${notes[index]}${octave}`
   ) as EnharmonicFullNotes;
-}
+};
 
-function toOctave(midiNoteNumber: number): Octave {
+const toOctave = (midiNoteNumber: number): Octave => {
   return (((midiNoteNumber - MIDI_C4 + 12 * 4) / 12) | 0) as Octave;
-}
+};

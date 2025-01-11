@@ -5,6 +5,7 @@ import {
   mapMIDINoteNumberToPitchClass,
   mapMIDINoteNumberToEnharmonicFullNotes,
   mapMIDINoteNumberToFrequency,
+  getPitchClassBitmap,
 } from "../../src/utils/note.utils";
 
 describe("mapFullNoteToMIDINoteNumber function", () => {
@@ -88,5 +89,24 @@ describe("mapMIDINoteNumberToFrequency function", () => {
     expect(mapMIDINoteNumberToFrequency(114)).toBe(5919.91);
     expect(mapMIDINoteNumberToFrequency(21)).toBe(27.5);
     expect(mapMIDINoteNumberToFrequency(128)).toBe(13289.75);
+  });
+});
+
+describe("getPitchClassBitmap function", () => {
+  it("should return correct flags for given inputs", () => {
+    expect(getPitchClassBitmap(["C", "E", "G"])).toEqual([
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+    ]);
   });
 });

@@ -1,4 +1,4 @@
-import * as parsers from "../../src/utils/stringParsers";
+import * as parsers from "../../src/utils/stringHelpers";
 
 describe("parseNumber function", () => {
   it("should return correct numbers", () => {

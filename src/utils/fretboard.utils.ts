@@ -9,10 +9,10 @@ import { mapBasicNoteToPitchClass } from "./note.utils";
 import { initailizeString, getFret } from "./string.utils";
 import { Fret } from "../models/fret";
 
-export function initializeFretboard(
+export const initializeFretboard = (
   openStrings: FullNote[] = DEFAULT_OPEN_STRINGS,
   numFrets: number = DEFAULT_NUM_FRETS
-): Fretboard {
+): Fretboard => {
   if (openStrings.length == 0) {
     throw new Error("Number of strings must be larger than 0");
   }
@@ -27,16 +27,22 @@ export function initializeFretboard(
     initailizeString(openString, numFrets)
   );
   return fretboard;
-}
+};
 
-export function getString(fretboard: Fretboard, stringIndex: number): String {
+export const getString = (
+  fretboard: Fretboard,
+  stringIndex: number
+): String => {
   if (!isValidStringIndex(fretboard, stringIndex)) {
     throw new Error("Invalid string index");
   }
   return fretboard.strings[stringIndex];
-}
+};
 
-export function deleteString(fretboard: Fretboard, stringIndex: number): void {
+export const deleteString = (
+  fretboard: Fretboard,
+  stringIndex: number
+): void => {
   if (!isValidStringIndex(fretboard, stringIndex)) {
     throw new Error("Invalid string index");
   }
@@ -44,13 +50,13 @@ export function deleteString(fretboard: Fretboard, stringIndex: number): void {
     throw new Error("Number of strings must be larger than 0");
   }
   fretboard.strings.splice(stringIndex, 1);
-}
+};
 
-export function insertString(
+export const insertString = (
   fretboard: Fretboard,
   string: String,
   stringIndex: number
-): void {
+): void => {
   if (
     !isValidStringIndex(fretboard, stringIndex) &&
     stringIndex != fretboard.strings.length
@@ -58,12 +64,12 @@ export function insertString(
     throw new Error("Invalid string index");
   }
   fretboard.strings.splice(stringIndex, 0, string);
-}
+};
 
-export function pressBasicNotes(
+export const pressBasicNotes = (
   fretboard: Fretboard,
   basicNotes: BasicNote[]
-): void {
+): void => {
   const hasPitchClass = Array.from({ length: 12 }, () => false);
   basicNotes.forEach((basicNote) => {
     const pitchClass = mapBasicNoteToPitchClass(basicNote);
@@ -73,20 +79,20 @@ export function pressBasicNotes(
   exports.forEachFret(fretboard, (fret: Fret) => {
     fret.isPressed = hasPitchClass[fret.pitchClass];
   });
-}
+};
 
-export function forEachFret(
+export const forEachFret = (
   fretboard: Fretboard,
   callback: (fret: Fret) => void
-): void {
+): void => {
   fretboard.strings.forEach((string) => {
     string.frets.forEach((fret) => callback(fret));
   });
-}
+};
 
-function isValidStringIndex(
+const isValidStringIndex = (
   fretboard: Fretboard,
   stringIndex: number
-): boolean {
+): boolean => {
   return stringIndex >= 0 && stringIndex < fretboard.strings.length;
-}
+};
