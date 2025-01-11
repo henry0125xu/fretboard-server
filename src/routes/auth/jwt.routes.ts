@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Router } from "express";
-import { JWT_SECRET } from "../../config/keys";
+import { JWT_SECRET } from "../../config/envConstants";
 import { generateRandomPayload } from "../../utils/jwtHelpers";
 
 const routes = Router();

@@ -1,6 +1,9 @@
 import { Fretboard } from "../models/fretboard";
+import { User } from "../models/user";
+import * as notesUtils from "../utils/note.utils";
 import * as stringUtils from "../utils/string.utils";
 import * as fretboardUtils from "../utils/fretboard.utils";
+import * as pressStrategyUtils from "../utils/pressStrategy.utils";
 import {
   parseNumber,
   parseBasicNote,
@@ -8,6 +11,7 @@ import {
 } from "../utils/stringHelpers";
 import { Store } from "../models/store";
 import { BasicNote } from "../models/note";
+import { PitchClassPressStrategy } from "../models/pressStrategy";
 
 export class FretboardService {
   private readonly store: Store;
@@ -16,18 +20,14 @@ export class FretboardService {
   }
 
   public async getFretboard(userId: string): Promise<Fretboard> {
-    let fretboard = await this.store.get(userId);
-    if (!fretboard) {
-      fretboard = fretboardUtils.initializeFretboard();
-      await this.store.set(userId, fretboard);
-    }
-    return fretboard as Fretboard;
+    return await this.updateFromStore(userId, (_user) => {});
   }
 
   public async resetFretboard(userId: string): Promise<Fretboard> {
-    const fretboard = fretboardUtils.initializeFretboard();
-    await this.store.set(userId, fretboard);
-    return fretboard;
+    return await this.updateFromStore(userId, (user) => {
+      user.fretboard = fretboardUtils.initializeFretboard();
+      user.pressStrategy = pressStrategyUtils.initializePressStrategy("none");
+    });
   }
 
   public async insertString(
@@ -35,7 +35,8 @@ export class FretboardService {
     stringId: string,
     openString: string
   ): Promise<Fretboard> {
-    return await this.updateFromStore(userId, (fretboard) => {
+    return await this.updateFromStore(userId, (user) => {
+      const fretboard = user.fretboard;
       const parsedStringId = parseNumber(stringId);
       const parsedOpenString = parseFullNote(openString);
 
@@ -52,7 +53,8 @@ export class FretboardService {
     userId: string,
     stringId: string
   ): Promise<Fretboard> {
-    return await this.updateFromStore(userId, (fretboard) => {
+    return await this.updateFromStore(userId, (user) => {
+      const fretboard = user.fretboard;
       const parsedStringId = parseNumber(stringId);
       fretboardUtils.deleteString(fretboard, parsedStringId);
     });
@@ -63,7 +65,8 @@ export class FretboardService {
     stringId: string,
     openString: string
   ): Promise<Fretboard> {
-    return await this.updateFromStore(userId, (fretboard) => {
+    return await this.updateFromStore(userId, (user) => {
+      const fretboard = user.fretboard;
       const parsedStringId = parseNumber(stringId);
       const parsedOpenString = parseFullNote(openString);
 
@@ -76,7 +79,8 @@ export class FretboardService {
     userId: string,
     numFrets: string
   ): Promise<Fretboard> {
-    return await this.updateFromStore(userId, (fretboard) => {
+    return await this.updateFromStore(userId, (user) => {
+      const fretboard = user.fretboard;
       const parsedNumFrets = parseNumber(numFrets);
       fretboard.strings.forEach((string) => {
         stringUtils.updateNumFrets(string, parsedNumFrets);
@@ -85,21 +89,38 @@ export class FretboardService {
   }
 
   public async pressNotes(userId: string, notes: string[]) {
-    return await this.updateFromStore(userId, (fretboard) => {
+    return await this.updateFromStore(userId, (user) => {
       const parsedBasicNotes: BasicNote[] = notes.map((note) =>
         parseBasicNote(note)
       );
-      fretboardUtils.pressBasicNotes(fretboard, parsedBasicNotes);
+      if (!(user.pressStrategy instanceof PitchClassPressStrategy)) {
+        user.pressStrategy =
+          pressStrategyUtils.initializePressStrategy("pitch-class");
+      }
+      user.pressStrategy.state =
+        notesUtils.getPitchClassBitmap(parsedBasicNotes);
     });
   }
 
   private async updateFromStore(
     userId: string,
-    callback: (fretboard: Fretboard) => void
+    callback: (user: User) => void
   ): Promise<Fretboard> {
-    const fretboard = await this.getFretboard(userId);
-    callback(fretboard);
-    await this.store.set(userId, fretboard);
-    return fretboard;
+    const user = await this.getUser(userId);
+    callback(user);
+    pressStrategyUtils.press(user.fretboard, user.pressStrategy);
+    await this.store.set<User>(userId, user);
+    return user.fretboard;
+  }
+
+  private async getUser(userId: string): Promise<User> {
+    let user = await this.store.get<User>(userId);
+    if (!user) {
+      const fretboard = fretboardUtils.initializeFretboard();
+      const pressStrategy = pressStrategyUtils.initializePressStrategy("none");
+      user = { id: userId, fretboard, pressStrategy };
+      await this.store.set<User>(userId, user as User);
+    }
+    return user as User;
   }
 }

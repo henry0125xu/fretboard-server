@@ -74,12 +74,12 @@ export const mapMIDINoteNumberToFrequency = (
 };
 
 export const getPitchClassBitmap = (basicNotes: BasicNote[]): boolean[] => {
-  const hasPitchClassFlags = Array.from({ length: 12 }, () => false);
+  const pitchClassBitmap = Array.from({ length: 12 }, () => false);
   basicNotes.forEach((basicNote) => {
     const pitchClass = mapBasicNoteToPitchClass(basicNote);
-    hasPitchClassFlags[pitchClass] = true;
+    pitchClassBitmap[pitchClass] = true;
   });
-  return hasPitchClassFlags;
+  return pitchClassBitmap;
 };
 
 const baseValues: Record<Note, number> = {

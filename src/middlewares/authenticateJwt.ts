@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/keys";
+import { JWT_SECRET } from "../config/envConstants";
 
 declare module "express-serve-static-core" {
   interface Request {

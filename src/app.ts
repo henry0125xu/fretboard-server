@@ -1,4 +1,4 @@
-import "./config/misc";
+import "./config/initialization";
 import express from "express";
 import authRoutes from "./routes/auth/index.routes";
 import apiRoutes from "./routes/api/index.routes";

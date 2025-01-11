@@ -3,13 +3,23 @@ import { Fretboard } from "../../src/models/fretboard";
 import { String } from "../../src/models/string";
 import { Store } from "../../src/models/store";
 import { Fret } from "../../src/models/fret";
-import { BasicNote, FullNote } from "../../src/models/note";
+import { User } from "../../src/models/user";
+import { FullNote } from "../../src/models/note";
+import {
+  NonePressStrategy,
+  PitchClassPressStrategy,
+  PressStrategy,
+} from "../../src/models/pressStrategy";
 import * as fretboardUtils from "../../src/utils/fretboard.utils";
 import * as stringUtils from "../../src/utils/string.utils";
+import * as pressStrategyUtils from "../../src/utils/pressStrategy.utils";
+import * as notesUtils from "../../src/utils/note.utils";
 
 const mockNumStrings = 3;
 const mockNumFrets = 10;
 let mockFretboard: Fretboard;
+let mockPressStrategy: PressStrategy;
+let mockUser: User;
 let mockStore: Store;
 let service: FretboardService;
 describe("FretboardService class", () => {
@@ -18,8 +28,14 @@ describe("FretboardService class", () => {
   });
   beforeEach(() => {
     mockFretboard = newMockFretboard();
+    mockPressStrategy = new NonePressStrategy();
+    mockUser = {
+      id: "jaylenbrown",
+      fretboard: mockFretboard,
+      pressStrategy: mockPressStrategy,
+    };
     mockStore = {
-      get: jest.fn().mockResolvedValue(mockFretboard),
+      get: jest.fn().mockResolvedValue(mockUser),
       set: jest.fn().mockResolvedValue(undefined),
       delete: jest.fn().mockResolvedValue(undefined),
     };
@@ -37,7 +53,7 @@ describe("FretboardService class", () => {
 
       expect(mockStore.get).toHaveBeenCalledWith("jaylenbrown");
       expect(initializeFretboardSpy).toHaveBeenCalled();
-      expect(mockStore.set).toHaveBeenCalledWith("jaylenbrown", mockFretboard);
+      expect(mockStore.set).toHaveBeenCalledWith("jaylenbrown", mockUser);
       expect(gottenFretboard).toBe(mockFretboard);
     });
     it("should return Fretboard instance with correct process", async () => {
@@ -52,11 +68,14 @@ describe("FretboardService class", () => {
       const initializeFretboardSpy = jest
         .spyOn(fretboardUtils, "initializeFretboard")
         .mockImplementation(() => mockFretboard);
+      const initializePressStrategySpy = jest
+        .spyOn(pressStrategyUtils, "initializePressStrategy")
+        .mockImplementation(() => mockPressStrategy);
 
       const gottenFretboard = await service.resetFretboard("kevindurant");
 
       expect(initializeFretboardSpy).toHaveBeenCalled();
-      expect(mockStore.set).toHaveBeenCalledWith("kevindurant", mockFretboard);
+      expect(initializePressStrategySpy).toHaveBeenCalledWith("none");
       expect(mockFretboard).toBe(gottenFretboard);
     });
   });
@@ -154,7 +173,26 @@ describe("FretboardService class", () => {
 
   describe("pressBasicNotes method", () => {
     it("should return Fretboard instance with correct process", async () => {
-      const pressBasicNotesSpy = jest.spyOn(fretboardUtils, "pressBasicNotes");
+      const initializePressStrategySpy = jest
+        .spyOn(pressStrategyUtils, "initializePressStrategy")
+        .mockImplementationOnce(() => new PitchClassPressStrategy());
+      const mockPitchClassBitmap = [
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+      ];
+      const getPitchClassBitmapSpy = jest
+        .spyOn(notesUtils, "getPitchClassBitmap")
+        .mockReturnValue(mockPitchClassBitmap);
 
       const gottenFretboard = await service.pressNotes("derrickrose", [
         "Eb",
@@ -163,12 +201,15 @@ describe("FretboardService class", () => {
         "Db",
       ]);
 
-      expect(pressBasicNotesSpy).toHaveBeenCalledWith(mockFretboard, [
+      expect(initializePressStrategySpy).toHaveBeenCalledWith("pitch-class");
+      expect(getPitchClassBitmapSpy).toHaveBeenCalledWith([
         "Eb",
         "G",
         "Bb",
         "Db",
-      ] as BasicNote[]);
+      ]);
+      expect(mockUser.pressStrategy).toBeInstanceOf(PitchClassPressStrategy);
+      expect(mockUser.pressStrategy.state).toEqual(mockPitchClassBitmap);
       expect(gottenFretboard).toBe(mockFretboard);
     });
   });

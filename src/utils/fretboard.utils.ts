@@ -1,12 +1,11 @@
-import { BasicNote, FullNote } from "../models/note";
+import { FullNote } from "../models/note";
 import {
   Fretboard,
   DEFAULT_OPEN_STRINGS,
   DEFAULT_NUM_FRETS,
 } from "../models/fretboard";
 import { String } from "../models/string";
-import { mapBasicNoteToPitchClass } from "./note.utils";
-import { initailizeString, getFret } from "./string.utils";
+import { initailizeString } from "./string.utils";
 import { Fret } from "../models/fret";
 
 export const initializeFretboard = (
@@ -64,21 +63,6 @@ export const insertString = (
     throw new Error("Invalid string index");
   }
   fretboard.strings.splice(stringIndex, 0, string);
-};
-
-export const pressBasicNotes = (
-  fretboard: Fretboard,
-  basicNotes: BasicNote[]
-): void => {
-  const hasPitchClass = Array.from({ length: 12 }, () => false);
-  basicNotes.forEach((basicNote) => {
-    const pitchClass = mapBasicNoteToPitchClass(basicNote);
-    hasPitchClass[pitchClass] = true;
-  });
-
-  exports.forEachFret(fretboard, (fret: Fret) => {
-    fret.isPressed = hasPitchClass[fret.pitchClass];
-  });
 };
 
 export const forEachFret = (

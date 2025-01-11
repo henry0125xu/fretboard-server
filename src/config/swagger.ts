@@ -1,6 +1,7 @@
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import path from "path";
+import { PORT } from "./envConstants";
 
 const options = {
   definition: {
@@ -18,7 +19,7 @@ const options = {
     ],
     servers: [
       {
-        url: `http://localhost:${process.env.PORT}/api/fretboard`,
+        url: `http://localhost:${PORT}/api/fretboard`,
         description: "Development server for Fretboard",
       },
     ],
