@@ -2,12 +2,6 @@ import { Request, Response, NextFunction, RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/envConstants";
 
-declare module "express-serve-static-core" {
-  interface Request {
-    userId: string;
-  }
-}
-
 const authenticateJwt: RequestHandler = (
   req: Request,
   res: Response,
