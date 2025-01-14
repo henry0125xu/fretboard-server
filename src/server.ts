@@ -1,8 +1,7 @@
 import app from "./app";
 import fs from "fs";
 import https from "https";
-
-const PORT = process.env.PORT || 3000;
+import { PORT } from "./config/envConstants";
 
 // const options = {
 //   key: fs.readFileSync("certs/key.pem"),

@@ -1,13 +1,19 @@
 export type Note = "C" | "D" | "E" | "F" | "G" | "A" | "B";
-
 export type Accidental = "" | "#" | "b" | "##" | "bb";
+export type Octave = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
-export type Octave = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-
-export type BasicNote = `${Accidental}${Note}`;
-
+export type BasicNote = `${Note}${Accidental}`;
 export type FullNote = `${BasicNote}${Octave}`;
 
-export const BASIC_NOTE_REGEX: RegExp = /^([#b]{0,2})([A-G])$/;
+export type EnharmonicBasicNotes = BasicNote[];
+export type EnharmonicFullNotes = FullNote[];
 
-export const FULL_NOTE_REGEX: RegExp = /^([#b]{0,2})([A-G])([0-8])$/;
+export const MIDI_C4: number = 60;
+export const MIDI_LO: number = 21;
+export const MIDI_HI: number = 128;
+
+const BASE_NOTE_PATTERN = `([A-G])([#b]{0,2})`;
+export const BASIC_NOTE_REGEX: RegExp = new RegExp(`^${BASE_NOTE_PATTERN}$`);
+export const FULL_NOTE_REGEX: RegExp = new RegExp(
+  `^${BASE_NOTE_PATTERN}([0-9])$`
+);

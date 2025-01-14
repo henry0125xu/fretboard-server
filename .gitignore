@@ -31,10 +31,6 @@ yarn.lock
 # Jest test coverage reports
 coverage/
 
-# TypeScript and TSLint configuration files
-tsconfig.json
-tslint.json
-
 # Swap files (optional)
 *.swp
 *.swo

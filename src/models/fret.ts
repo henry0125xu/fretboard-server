@@ -1,26 +1,9 @@
+import { EnharmonicFullNotes, MIDI_C4 } from "./note";
+
 export class Fret {
-  public readonly noteCode: number;
-
-  public constructor(noteCode: number) {
-    this.noteCode = noteCode;
-  }
-
-  private _isPressed: boolean = false;
-  public get isPressed(): boolean {
-    return this._isPressed;
-  }
-
-  public toJSON() {
-    return {
-      isPressed: this._isPressed,
-    };
-  }
-
-  public press() {
-    this._isPressed = true;
-  }
-
-  public release() {
-    this._isPressed = false;
-  }
+  public midiNoteNumber: number = MIDI_C4;
+  public pitchClass: number = 0;
+  public enharmonicNotes: EnharmonicFullNotes = ["C4"];
+  public frequency: number = 261.63;
+  public isPressed: boolean = false;
 }
