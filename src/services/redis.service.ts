@@ -5,7 +5,9 @@ export class RedisService implements Store {
   public readonly client: RedisClientType;
 
   constructor() {
-    this.client = createClient();
+    this.client = createClient({
+      url: process.env.REDIS_URL || "redis://localhost:6379",
+    });
     this.client.on("error", (err) => console.error(err));
     this.client.connect().catch(console.error);
   }
