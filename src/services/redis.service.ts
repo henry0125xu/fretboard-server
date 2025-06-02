@@ -1,12 +1,13 @@
 import { createClient, RedisClientType } from "redis";
 import { Store } from "../models/store";
+import { REDIS_URL } from "../config/envConstants";
 
 export class RedisService implements Store {
   public readonly client: RedisClientType;
 
   constructor() {
     this.client = createClient({
-      url: process.env.REDIS_URL || "redis://localhost:6379",
+      url: REDIS_URL,
     });
     this.client.on("error", (err) => console.error(err));
     this.client.connect().catch(console.error);
